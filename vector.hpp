@@ -6,7 +6,7 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 16:54:09 by pleveque          #+#    #+#             */
-/*   Updated: 2022/03/31 20:32:53 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/03/31 21:13:07 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include <string>
 #include <typeinfo>
 #include "ft_namespace.hpp"
+#include <memory>
 
 template <
 	typename T,
@@ -110,11 +111,11 @@ class ft::vector
 		) :
 			_alctr( alloc ),
 			_size ( count ),
-			_arr( this->_alctr.allocate( this->_size ) )
+			_arr( this->_alctr.allocate( _size ) )
 		{
-			
+
 			for (size_type i = 0; i < count; ++i)
-				_arr[i] = value;
+				this->_alctr.construct( this->_arr + i, value );
 			std::cout << "ft_vector count constructor" << std::endl;
 		}
 
@@ -134,7 +135,7 @@ class ft::vector
 			size_t i = 0;
 			for ( InputIt it = first; it != last; ++it)
 			{
-				this->_arr[i] = *it;
+				this->_alctr.construct( this->_arr + i, *it );
 				++i;
 			}
 			std::cout << "ft_vector range constructor, size: " << this->_size << std::endl;

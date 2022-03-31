@@ -6,7 +6,7 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 16:55:49 by pleveque          #+#    #+#             */
-/*   Updated: 2022/03/31 20:28:10 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/03/31 21:12:27 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,13 @@
 
 int main( void ) {
 
-    // ft::vector<int> test00;
+    ft::vector<int> test00;
 
     const std::allocator<int> allocator;
+    std::allocator<std::string> str_alloc;
     // ft::vector<int> test01( allocator );
-    // ft::vector<int> test02( static_cast<std::size_t>(5), 666, allocator );
+    std::string test02str = "COUNT";
+    ft::vector<std::string> test02( static_cast<std::size_t>(5), test02str, str_alloc );
     std::vector<int> vec(5, 9);
     ft::vector<int> test03( vec.begin(), vec.end(), allocator );
     ft::vector<int> test04( test03 );
