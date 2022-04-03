@@ -1,29 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   iterator.hpp                                       :+:      :+:    :+:   */
+/*   random_iterator.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/03 15:15:07 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/03 15:16:07 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/03 16:55:11 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-/* ************************************************************************** */
-/*                                                                            */
-/*            @ITERATORS                                                      */
-/*                                                                            */
-/* ************************************************************************** */
-class iterator: public std::iterator<
-    std::random_access_iterator_tag, //category
-    T, //type
-    difference_type, //distance 
-    T*, //pointer
-    T& // reference
-> {
+#include "ft.hpp"
+
+template <
+	typename T,
+	typename Allocator = std::allocator<T>
+>
+
+class ft::random_iterator : public std::iterator
+        <
+            std::random_access_iterator_tag, //category
+            T, //type
+            std::ptrdiff_t, //distance 
+            T*, //pointer
+            T& // ref
+        > 
+    {
     private:
-        typedef typename std::iterator_traits<iterator>::difference_type difference_type;
+		typedef T value_T;
+		typedef T& ref;
+        typedef random_iterator iterator;
+        typedef typename std::iterator_traits<random_iterator>::difference_type difference_type;
         T* _from;
         T* _to;
         difference_type _position;
@@ -73,20 +80,20 @@ class iterator: public std::iterator<
         /*************************
         * @default constructor
         * ***********************/
-        iterator(void) : _from( NULL ), _to( NULL ), _position( 0 ) {};
+        random_iterator(void) : _from( NULL ), _to( NULL ), _position( 0 ) {};
 
         /*************************
         * @parameter constructor
         * ( should be hided from final user )
         * ***********************/
-        iterator( T* from, T* to, difference_type position ) :
+        random_iterator( T* from, T* to, difference_type position ) :
             _from( from ), _to( to ), _position( position )
         {};
         
         /*************************
         * @copy constructor
         * ***********************/
-        iterator( const iterator & ref ) :
+        random_iterator( const random_iterator & ref ) :
             _from( ref.getFrom() ),
             _to( ref.getTo() ),
             _position( ref.getPosition() )
@@ -95,7 +102,7 @@ class iterator: public std::iterator<
         /*************************
         * @copy assignement
         * ***********************/
-        iterator &operator=( iterator & rhs ) {
+        random_iterator &operator=( random_iterator & rhs ) {
 
             this->_from = rhs.getFrom();
             this->_to = rhs.getTo();
@@ -105,11 +112,11 @@ class iterator: public std::iterator<
         /*************************
         * @destructor
         * ***********************/
-        ~iterator(void) {};
+        ~random_iterator(void) {};
 
         /* ************************************************************************** */
         /*                                                                            */
-        /*            @legacyOutputIterator                                           */
+        /*            @legacyOutputrandom_iterator                                    */
         /*                                                                            */
         /* ************************************************************************** */
         
@@ -125,7 +132,7 @@ class iterator: public std::iterator<
         * to have the wanted behavior
         * we need to check every values
         * ***********************/
-        bool	operator==( const iterator &b ) const {
+        bool	operator==( const random_iterator &b ) const {
 
             if ( this->_from == b.getFrom()
                 && this->_to == b.getTo()
@@ -134,7 +141,7 @@ class iterator: public std::iterator<
                 return true;
             return false;
         };
-        bool	operator!=( const iterator &b ) const {
+        bool	operator!=( const random_iterator &b ) const {
             return ( !( this->operator==(b) ) );
         };
 
@@ -144,18 +151,18 @@ class iterator: public std::iterator<
         * the end value, but still
         * remain a undefined behavior
         * ***********************/
-        reference& operator*(void) {
+        ref& operator*(void) {
 
-            return ( *static_cast<value_type *>(this->_from + this->_position) );
+            return ( *static_cast<value_T *>(this->_from + this->_position) );
         };
         /*************************
         * @i->m equivalent (*i).m
         * ***********************/
-        value_type *operator->() {
+        value_T *operator->() {
 
             return ( this->_from + this->_position );
         };
-        iterator& operator++(void) {
+        random_iterator& operator++(void) {
 
             this->_incr( static_cast<difference_type>(1) );
             return ( *this );
@@ -165,9 +172,9 @@ class iterator: public std::iterator<
         /*            @legacyForwardIterator                                          */
         /*                                                                            */
         /* ************************************************************************** */
-        iterator operator++(int) {
+        random_iterator operator++(int) {
 
-            iterator tmp = *this;
+            random_iterator tmp = *this;
             this->_incr( static_cast<difference_type>(1) );
             return tmp;
         };
@@ -178,15 +185,15 @@ class iterator: public std::iterator<
         /*            @legacyBidirectionalIterator                                    */
         /*                                                                            */
         /* ************************************************************************** */
-        /* past end iterator = undefined */
-        iterator& operator--(void) {
+        /* past end random_iterator = undefined */
+        random_iterator& operator--(void) {
 
             this->_incr( static_cast<difference_type>(-1) );
             return ( *this );
         };
-        iterator operator--(int) {
+        random_iterator operator--(int) {
 
-            iterator tmp = *this;
+            random_iterator tmp = *this;
             this->_incr( static_cast<difference_type>(-1) );
             return tmp;
         };
@@ -194,19 +201,19 @@ class iterator: public std::iterator<
 
         /* ************************************************************************** */
         /*                                                                            */
-        /*            @legacyRandomAccessIterator                                     */
+        /*            @legacyRandomAccessrandom_iterator                                     */
         /*                                                                            */
         /* ************************************************************************** */
         
         /*************************
         * @random modifier
         * ***********************/
-        iterator& operator+=( const difference_type n ) {
+        random_iterator& operator+=( const difference_type n ) {
 
             this->_incrNoLimit( n );
             return ( *this );
         };
-        iterator& operator-=( const difference_type n ) {
+        random_iterator& operator-=( const difference_type n ) {
 
             return ( this->operator+=( -n ) );
         };
@@ -219,27 +226,27 @@ class iterator: public std::iterator<
         *  In our case we wanted asymetric operator,
         */
         /*addition*/
-        friend iterator operator+( const difference_type n,  const iterator &a ) {
+        friend random_iterator operator+( const difference_type n,  const random_iterator &a ) {
 
-            iterator temp = a;
+            random_iterator temp = a;
             return temp += n;
         };
-        iterator operator+( const difference_type n ) const {
+        random_iterator operator+( const difference_type n ) const {
 
-            iterator temp = *this;
+            random_iterator temp = *this;
             return temp += n;
         };
         /*substratction*/
-        iterator operator-( const difference_type n ) const {
+        random_iterator operator-( const difference_type n ) const {
 
-            iterator temp = *this;
+            random_iterator temp = *this;
             return temp -= n;
         };
 
         /*************************
-        * @difference between iterators
+        * @difference between random_iterators
         * ***********************/
-        difference_type operator-( const iterator &b ) const {
+        difference_type operator-( const random_iterator &b ) const {
             
             difference_type diff = this->_position - b.getPosition();
             if ( *this == b + (diff) )
@@ -247,27 +254,27 @@ class iterator: public std::iterator<
             return static_cast<difference_type>(0);
         };
 
-        reference& operator[]( const difference_type n ) {
+        ref& operator[]( const difference_type n ) {
 
-            return ( *static_cast<value_type *>(this->_from + this->_position + n) );
+            return ( *static_cast<value_T *>(this->_from + this->_position + n) );
         };
 
         /*************************
         * @comparaison
         * ***********************/
-        bool	operator<( const iterator &b ) const {
+        bool	operator<( const random_iterator &b ) const {
 
             return ( (b - *this) > 0 );
         };
-        bool	operator>( const iterator &b ) const {
+        bool	operator>( const random_iterator &b ) const {
 
             return ( (b - *this) < 0 );
         };
-        bool	operator>=( const iterator &b ) const {
+        bool	operator>=( const random_iterator &b ) const {
 
             return ( !( this->operator<(b) ) );
         };
-        bool	operator<=( const iterator &b ) const {
+        bool	operator<=( const random_iterator &b ) const {
 
             return ( !( this->operator>(b) ) );
         };
