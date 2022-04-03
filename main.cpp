@@ -6,7 +6,7 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 16:55:49 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/02 20:18:17 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/03 16:29:15 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,36 @@
 #include "ft.hpp"
 #include <vector>
 
+// int main()
+// {
+//     int sz = 100;
+//     std::vector<int> v;
+ 
+//     v.reserve(10);
+
+//     std::vector<int>::size_type cap = v.capacity();
+//     std::cout << "Initial size: " << v.size() << ", capacity: " << cap << '\n';
+ 
+//     std::cout << "\nDemonstrate the capacity's growth policy."
+//                  "\nSize:  Capacity:  Ratio:\n" << std::left;
+//     while (sz-- > 0) {
+//         v.push_back(sz);
+//             std::cout << ":" << v.size()
+//                       << ":" << v.capacity()
+//                       << ":" << v.capacity() / static_cast<float>(cap) << '\n';
+//             cap = v.capacity();
+//     }
+//     sz = 100;
+//     while (sz-- > 0) {
+//         v.pop_back();
+//         std::cout << ":" << v.size()
+//                     << ":" << v.capacity()
+//                     << ":" << v.capacity() / static_cast<float>(cap) << '\n';
+//         cap = v.capacity();
+//     }
+ 
+//     std::cout << "\nFinal size: " << v.size() << ", capacity: " << v.capacity() << '\n';
+// }
 
 int main( void ) {
 
@@ -57,28 +87,20 @@ int main( void ) {
     // }
 
     // std::cout << &(*it) << std::endl;
-    ft::vector<std::string> t( static_cast<std::size_t>(5), "salut les amis" );
+    std::vector<std::string> t( static_cast<std::size_t>(5), "salut les amis" );
     t[0] = "salut";
     t[1] = "les";
     t[2] = "amis";
     t[3] = "comment";
     t[4] = "allez";
 
-    ft::vector<std::string>::iterator it = t.begin();
-    ft::vector<std::string>::iterator it2 = t.begin();
-    ++it2;
-    std::cout << (it[1] == *++it) << std::endl;
-    // --it;
-    // for (; it != t.begin(); it-- ) {
-
-    //     std::cout << "{" << *it << std::endl;
-    // }
-    // std::cout << "<-----------{out}----------->" << std::endl;
-    // std::cout << *it << std::endl;
-    // std::cout << *(++it) << std::endl;
-    // std::cout << *it << std::endl;
-    // std::cout << *it << std::endl;
-
-
+    std::cout << t.size() << "::" << t.capacity() << std::endl;
+    t.push_back("yeah");
+    t.pop_back();
+    std::cout << t.size() << "::" << t.capacity() << std::endl;
+    for (std::vector<std::string>::iterator it = t.begin(); it != t.end(); ++it) {
+        std::cout << *(it) << std::endl;
+    }
+    
     return (0);
 }
