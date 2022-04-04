@@ -6,7 +6,7 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 16:55:49 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/03 18:58:26 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/04 18:04:51 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ int main( void ) {
     // ft::vector<int> t( static_cast<std::size_t>(1), 666 );
     // std::cout << *t.data() << std::endl;
 
-    std::cout << "<-----------{Iterators}----------->" << std::endl;
+    // std::cout << "<-----------{Iterators}----------->" << std::endl;
     // std::vector<std::string> t;
     // t.push_back("salut");
     // t.push_back("les");
@@ -87,6 +87,7 @@ int main( void ) {
     // }
 
     // std::cout << &(*it) << std::endl;
+
     ft::vector<std::string> t( static_cast<std::size_t>(5), "salut les amis" );
     t[0] = "salut";
     t[1] = "les";
@@ -96,15 +97,18 @@ int main( void ) {
 
     t.push_back("vous");
 
-    ft::reverse_iterator< ft::vector<std::string>::iterator > rit;
 
-    std::cout << t.size() << "::" << t.capacity() << std::endl;
-    std::cout << t.size() << "::" << t.capacity() << std::endl;
-    for (ft::vector<std::string>::iterator it = t.begin(); it != t.end(); ++it) {
-        std::cout << *it << std::endl;
-    }
-    // ft::vector<std::string>::iterator it;
-    // ft::reverse_iterator<int> rit;
+    ft::reverse_iterator< ft::vector<std::string>::iterator > rit( t.begin() );
+    ft::reverse_iterator< ft::vector<std::string>::iterator > rit2( t.end() );
+    rit = rit2;
+    std::cout << ( t.end() == rit.base() ) << std::endl;
+
+
+
+    // std::cout << "<-----------{iteration}----------->" << std::endl;
+    // for (; rit != t.rend(); ++rit) {
+    //     std::cout << *rit << std::endl;
+    // }
     
     return (0);
 }
