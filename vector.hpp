@@ -6,7 +6,7 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 16:54:09 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/03 18:21:29 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/05 17:28:36 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,25 +77,41 @@ class ft::vector
 			return true;
 		}
 
+
+		// void	_move_array_forward( iterator begin, iterator end, iterator dest );
+		// void	_move_array_backward( iterator begin, iterator end, iterator dest );
+
+		// iterator _move_array( iterator begin, iterator end, iterator dest ) {
+
+		// 	iterator tmp = dest;
+
+		// 	if ( tmp == begin )
+		// 		return tmp;
+		// 	if ( begin < dest )
+		// 		_move_array_forward( begin, end, tmp );
+		// 	else
+		// 		_move_array_backward( begin, end, tmp );
+
+		// 	return dest;
+		// }
+
+		// iterator	_move_array_forward( iterator begin, iterator end, iterator dest ) {
+
+		// 	iterator tmp = dest;
+
+		// 	for (; begin != end; ++dest, ++begin ) {
+
+		// 		this->_alctr.construct( new_arr + i, ref[i] );
+		// 	}
+		// }
+
+
 		value_type*	copy_arr( size_type new_cap, value_type *ref, size_type ref_size ) {
 
 			value_type *new_arr = this->_alctr.allocate( new_cap );
 			for ( size_t i = 0; i < ref_size; ++i )
 				this->_alctr.construct( new_arr + i, ref[i] );
 			return ( new_arr );
-		}
-
-		iterator _move_array( iterator begin, iterator end, iterator dest ) {
-
-			iterator real_dest = dest;
-			std::cout << "<-----------{}----------->" << std::endl;			
-			for (; end > begin; --end, --dest)
-			{
-				std::cout << *end << std::endl;
-				*dest = *end;
-			}
-			std::cout << "<-----------{}----------->" << std::endl;
-			return real_dest;
 		}
 
 		//could use a non member function with args instead of this
@@ -205,7 +221,7 @@ class ft::vector
 			_arr( this->_alctr.allocate( _capacity ) )
 		{
 			
-			size_t i = 0;
+			size_type i = 0;
 			for ( InputIt it = first; it != last; ++it)
 			{
 				this->_alctr.construct( this->_arr + i, *it );
@@ -221,12 +237,11 @@ class ft::vector
 			_alctr( other.get_allocator() ),
 			_size( other.getSize() ),
 			_capacity( other.getCapacity() ),
-			_arr( this->_alctr.allocate( _capacity ) )
+			_arr( 
+				copy_arr( this->_capacity, other.getArr(), other.getSize() ) 
+			)
 		{
 
-			T* arr = other.getArr();
-			for ( size_t i = 0; i < this->_size; ++i)
-				this->_arr[i] = arr[i];
 			std::cout << "ft_vector copy constructor" << std::endl;
 		}
 
@@ -255,7 +270,9 @@ class ft::vector
 		* @OPERATOR OVELOAD
 		* ASSIGNATION =
 		* ***********************/
-		vector &   operator=( vector const & other );
+		vector &   operator=( vector const & other ) {
+
+		};
 
 		/*************************
 		* @ASSIGN BY SIZE

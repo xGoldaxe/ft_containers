@@ -68,11 +68,11 @@ class ft::random_iterator : public std::iterator
 		void	_incr( difference_type n ) {
 			
 			this->_position += n;
-			if ( this->_position < 0)
-				this->_position = static_cast<difference_type>(0);
+			// if ( this->_position < 0)
+			// 	this->_position = static_cast<difference_type>(0);
 			//comparing the pointer adress
-			if ( (this->_from + this->_position) > this->_to )
-				this->_position = static_cast<difference_type>(0);
+			// if ( (this->_from + this->_position) > this->_to )
+			// 	this->_position = static_cast<difference_type>(0);
 		}
 		void	_incrNoLimit( difference_type n ) {
 			
@@ -232,15 +232,8 @@ class ft::random_iterator : public std::iterator
 		* of iterators
 		* ***********************/
 	
-		/* friend allow the function to be non-member and also overloaded operator 
-		*  In our case we wanted asymetric operator,
-		*/
+		
 		/*addition*/
-		friend random_iterator operator+( const difference_type n,  const random_iterator &a ) {
-
-			random_iterator temp = a;
-			return temp += n;
-		};
 		random_iterator operator+( const difference_type n ) const {
 
 			random_iterator temp = *this;
@@ -288,4 +281,15 @@ class ft::random_iterator : public std::iterator
 
 			return ( !( this->operator>(b) ) );
 		};
+};
+
+/* non-member function allow overloaded operator 
+*  for asymetric operator,
+*/
+template < class random_iterator >
+random_iterator operator+( const typename random_iterator::difference_type n,
+	const random_iterator &a ) {
+
+	random_iterator temp = a;
+	return temp += n;
 };

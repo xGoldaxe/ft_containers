@@ -1,5 +1,20 @@
-fix copy constructors
-
 assign
 
-reverse iterator
+rbegin
+rend
+
+insert
+
+erase
+
+swap
+
+resize
+
+non member functions
+
+std::swap specialization
+
+fix range constructors ( with pointer )
+
+test for verything ;0

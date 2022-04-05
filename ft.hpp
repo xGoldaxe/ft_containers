@@ -6,7 +6,7 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 17:11:27 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/03 18:59:24 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/05 12:56:59 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,13 @@
 #include <iostream>
 #include <string>
 #include <typeinfo>
-#include "ft_namespace.hpp"
 #include <memory>
 #include <stdexcept>
 #include <stdlib.h>
 #include <sstream>
 #include <stdexcept>
+
+#include "ft_namespace.hpp"
 #include "vector.hpp"
 #include "ft_namespace.hpp"
 #include "random_iterator.hpp"

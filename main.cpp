@@ -6,7 +6,7 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 16:55:49 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/04 18:04:51 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/05 17:25:04 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,20 +95,12 @@ int main( void ) {
     t[3] = "comment";
     t[4] = "allez";
 
+
+    ft::vector<std::string> cpy( t );
     t.push_back("vous");
 
+    std::cout << cpy.capacity() << " " << cpy.size() << std::endl;
+    std::cout << t.capacity() << " " << t.size() << std::endl;
 
-    ft::reverse_iterator< ft::vector<std::string>::iterator > rit( t.begin() );
-    ft::reverse_iterator< ft::vector<std::string>::iterator > rit2( t.end() );
-    rit = rit2;
-    std::cout << ( t.end() == rit.base() ) << std::endl;
-
-
-
-    // std::cout << "<-----------{iteration}----------->" << std::endl;
-    // for (; rit != t.rend(); ++rit) {
-    //     std::cout << *rit << std::endl;
-    // }
-    
     return (0);
 }
