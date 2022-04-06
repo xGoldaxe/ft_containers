@@ -6,7 +6,7 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 16:54:09 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/05 17:28:36 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/05 21:47:51 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #	define VECTOR_HPP
 
 #include "ft.hpp"
+#include "reverse_iterator.hpp"
 
 template <
 	typename T,
@@ -47,6 +48,7 @@ class ft::vector
 		typedef ft::random_iterator<value_type, Allocator> iterator;
 		typedef ft::random_iterator<const value_type, Allocator> const_iterator;
 		typedef ft::reverse_iterator<iterator> reverse_iterator;
+		typedef const ft::reverse_iterator<iterator> const_reverse_iterator;
 
 		/*?*/
 		// typedef value_type iterator;
@@ -92,19 +94,22 @@ class ft::vector
 		// 	else
 		// 		_move_array_backward( begin, end, tmp );
 
-		// 	return dest;
+		// 	return dest;f
 		// }
 
-		// iterator	_move_array_forward( iterator begin, iterator end, iterator dest ) {
+		iterator	_move_array_forward( iterator begin, iterator end, iterator dest ) {
 
-		// 	iterator tmp = dest;
+			reverse_iterator dest_it( dest + (end - begin) - static_cast<difference_type>(1) );
+			reverse_iterator end_r( begin );
 
-		// 	for (; begin != end; ++dest, ++begin ) {
+			if ( begin > end )
+				return (dest);
+			for ( reverse_iterator it(end); it != end_r; ++dest_it, ++it ) {
 
-		// 		this->_alctr.construct( new_arr + i, ref[i] );
-		// 	}
-		// }
-
+				this->_alctr.construct( &*dest_it.base(), *it );
+			}
+			return (dest);
+		}
 
 		value_type*	copy_arr( size_type new_cap, value_type *ref, size_type ref_size ) {
 
@@ -122,15 +127,39 @@ class ft::vector
 			return (this->_arr);
 		}
 
-		bool	_verify_capacity( size_type incr = 1 ) {
+		bool _verify_capacity( size_type incr = 1 ) {
 
-			if ( this->_size + incr > this->_capacity ) {
+			size_type new_cap = incr + this->_size;
+			if ( incr > this->max_size() || new_cap > this->max_size() ) {
 				
-				this->reserve(this->_capacity * 2);
+				throw ( std::length_error("vector::_verify_capacity") );
+			}
+			if ( new_cap > this->_capacity ) {
+				
+				if ( new_cap <= this->_capacity * 2 )
+					new_cap = this->_capacity * 2;
+					
+				this->reserve(new_cap);
 				return true;
 			}
 			return false;
 		}
+
+		size_type _incr_from_total( size_type new_size, size_type capacity ) {
+
+			if ( new_size > capacity )
+				return ( new_size - capacity );
+			return (0);
+		}
+
+		value_type *_size_cpy( size_type count, const value_type &value, value_type *dst ) {
+
+			for ( size_type i = 0; i < count; ++i ) {
+
+				this->_alctr.construct( dst + i, value );
+			}
+			return dst;
+		};
 
 	protected:
 		/* ************************************************************************** */
@@ -272,18 +301,42 @@ class ft::vector
 		* ***********************/
 		vector &   operator=( vector const & other ) {
 
+
+			// if (other != *this)
+			//cleanup before modification
+			_alctr.deallocate( this->_arr, this->_capacity );
+
+			this->_alctr = other.get_allocator();
+			this->_size = other.getSize();
+			this->_capacity = other.getCapacity();
+			this->_arr = copy_arr( this->_capacity, other.getArr(), other.getSize() );
+			return (*this);
 		};
 
 		/*************************
 		* @ASSIGN BY SIZE
 		* ***********************/
-		void    assign( size_type count, const T& value );
+		void    assign( size_type count, const T& value ) {
+
+			this->reserve( count );
+			this->_size = count;
+			_size_cpy(count, value, this->_arr);
+		};
 
 		/*************************
 		* @ASSING BY ITERATION
 		* ***********************/
 		template < class InputIt >
-		void    assign( InputIt first, InputIt last );
+		void    assign( InputIt first, InputIt last ) {
+
+			difference_type diff = last - first;
+			this->reserve( diff );
+			this->_size = static_cast<size_type>(diff);
+			for ( size_type i = 0; first != last; ++i, ++first ) {
+
+				this->_alctr.construct( this->_arr + i, *first );
+			}
+		};
 
 		/*************************
 		* @GETTER FOR ALLOCATOR
@@ -340,7 +393,7 @@ class ft::vector
 			return ( this->_arr[0] );
 		};
 
-		const_reference front() const {
+		const_reference front( void ) const {
 
 			return ( const_cast<const_reference>(this->_arr[0]) );
 		};
@@ -388,32 +441,46 @@ class ft::vector
 		/*                                                                            */
 		/* ************************************************************************** */
 
-
-		iterator begin() {
+		/*************************
+		* @iterators
+		* ***********************/
+		iterator begin(void) {
 
 			return iterator( this->_arr, this->_arr + this->_size, 0 );
 		};		
-		iterator end() {
+		iterator end(void) {
 
 			return iterator( this->_arr, this->_arr + this->_size, this->_size );
 		};
-		const iterator begin() const {
+		const iterator begin(void) const {
 			
 			return iterator( this->_arr, this->_arr + this->_size, 0 );
 		};
-		const iterator end() const {
+		const iterator end(void) const {
 			
 			return iterator( this->_arr, this->_arr + this->_size, this->_size );
 		};
+		/*************************
+		* @reverse iterators
+		* ***********************/
 		
-		// reverse_iterator rbegin() {
+		reverse_iterator rbegin(void) {
 
-		// 	return reverse_iterator( iterator( this->_arr, this->_arr + this->_size, 0 ) );
-		// };
-		// const reverse_iterator rbegin() const;
+			return reverse_iterator( this->end() );
+		}
+		reverse_iterator rend(void) {
 
-		// reverse_iterator rend();
-		// const reverse_iterator rend() const;
+			return reverse_iterator( this->begin() );
+		}
+
+		const_reverse_iterator rbegin(void) const {
+
+			return reverse_iterator( this->begin() );
+		} 
+		const_reverse_iterator rend(void) const {
+
+			return reverse_iterator( this->end() );
+		}
 
 		/* ************************************************************************** */
 		/*                                                                            */
@@ -478,18 +545,34 @@ class ft::vector
 		/*************************
 		* @insert
 		* ***********************/
-		//we need reverse iterator for ths
 		iterator insert( iterator pos, const T& value ) {
 			
+			//in case of reallocation
+			difference_type diff = pos - this->begin();
 			this->_verify_capacity(1);
-			pos = this->begin() + (pos - this->begin() );
-			this->_move_array(pos, this->end() - 1, this->end() );
+			pos = this->begin() + diff;
+
+			this->_alctr.construct( &*this->end(), *(this->end() - 1) );
+			this->_move_array_forward( pos, this->end(), pos + 1);
 			this->_size++;
 			*pos = value;
+
 			return (pos);
 		};
 
-		iterator insert( iterator pos, size_type count, const T& value );
+		void insert( iterator pos, size_type count, const T& value ) {
+
+			if ( pos > this->end() || pos < this->begin() )
+				throw ( std::length_error("vector::insert") );
+			//in case of reallocation
+			difference_type diff = pos - this->begin();
+			this->_verify_capacity(count);
+			pos = this->begin() + diff;
+
+			this->_move_array_forward( pos, this->end(), pos + count);
+			this->_size += count;
+			_size_cpy( count, value, &*pos );
+		};
 
 		template< class InputIt >
 		void insert( const_iterator pos, InputIt first, InputIt last );

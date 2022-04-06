@@ -6,9 +6,14 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/03 17:30:41 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/05 16:48:42 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/05 20:01:07 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+
+#ifndef REVERSE_ITERATOR_HPP
+#	define REVERSE_ITERATOR_HPP
+
 
 #include "ft.hpp"
 
@@ -230,3 +235,6 @@ typename ft::reverse_iterator<Iter> ::difference_type
 
 	return ( rhs.base() - lhs.base() );
 }
+
+
+#endif

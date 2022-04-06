@@ -6,7 +6,7 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 16:55:49 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/05 17:25:04 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/05 21:50:41 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,19 +88,19 @@ int main( void ) {
 
     // std::cout << &(*it) << std::endl;
 
-    ft::vector<std::string> t( static_cast<std::size_t>(5), "salut les amis" );
+    ft::vector<std::string> t( static_cast<std::size_t>(5), "" );
     t[0] = "salut";
     t[1] = "les";
     t[2] = "amis";
     t[3] = "comment";
     t[4] = "allez";
+    
+    t.insert( t.begin() + 3, 300000, "=========" );
 
-
-    ft::vector<std::string> cpy( t );
-    t.push_back("vous");
-
-    std::cout << cpy.capacity() << " " << cpy.size() << std::endl;
-    std::cout << t.capacity() << " " << t.size() << std::endl;
+    std::cout << t.size() << ":" << t.capacity() << std::endl;
+    for (ft::vector<std::string>::iterator it = t.begin();
+            it != t.end(); ++it)
+        std::cout << *it << std::endl;
 
     return (0);
 }

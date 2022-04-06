@@ -1,8 +1,3 @@
-assign
-
-rbegin
-rend
-
 insert
 
 erase
@@ -18,3 +13,5 @@ std::swap specialization
 fix range constructors ( with pointer )
 
 test for verything ;0
+
+vector operator = verification
