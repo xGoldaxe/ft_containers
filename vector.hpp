@@ -6,7 +6,7 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 16:54:09 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/05 21:47:51 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/07 16:31:50 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ class ft::vector
 		/* ************************************************************************** */
 		
 		typedef ft::random_iterator<value_type, Allocator> iterator;
-		typedef ft::random_iterator<const value_type, Allocator> const_iterator;
+		typedef const ft::random_iterator<value_type, Allocator> const_iterator;
 		typedef ft::reverse_iterator<iterator> reverse_iterator;
 		typedef const ft::reverse_iterator<iterator> const_reverse_iterator;
 
@@ -199,7 +199,7 @@ class ft::vector
 			_arr( this->_alctr.allocate( _capacity ) )
 		{
 
-			std::cout << "ft_vector created!" << std::endl;
+			// std::cout << "ft_vector created!" << std::endl;
 		};
 		
 		/*************************
@@ -212,7 +212,7 @@ class ft::vector
 			_arr( this->_alctr.allocate( _capacity ) )
 		{
 
-			std::cout << "ft_vector alloc constructor" << std::endl;
+			// std::cout << "ft_vector alloc constructor" << std::endl;c
 		};
 
 		/*************************
@@ -233,7 +233,7 @@ class ft::vector
 
 			for (size_type i = 0; i < count; ++i)
 				this->_alctr.construct( this->_arr + i, value );
-			std::cout << "ft_vector count constructor" << std::endl;
+			// std::cout << "ft_vector count constructor" << std::endl;
 		}
 
 		/*************************
@@ -256,7 +256,7 @@ class ft::vector
 				this->_alctr.construct( this->_arr + i, *it );
 				++i;
 			}
-			std::cout << "ft_vector range constructor, size: " << this->_size << std::endl;
+			// std::cout << "ft_vector range constructor, size: " << this->_size << std::endl;
 		}
 
 		/*************************
@@ -271,7 +271,7 @@ class ft::vector
 			)
 		{
 
-			std::cout << "ft_vector copy constructor" << std::endl;
+			// std::cout << "ft_vector copy constructor" << std::endl;
 		}
 
 		/* ************************************************************************** */
@@ -286,7 +286,7 @@ class ft::vector
 		~vector( void ) {
 			//cleanup
 			_alctr.deallocate( this->_arr, this->_capacity );
-			std::cout << "ft_vector destroyed!" << std::endl;
+			// std::cout << "ft_vector destroyed!" << std::endl;
 		};
 
 		/* ************************************************************************** */
@@ -575,7 +575,20 @@ class ft::vector
 		};
 
 		template< class InputIt >
-		void insert( const_iterator pos, InputIt first, InputIt last );
+		void insert( const_iterator pos, InputIt first, InputIt last ) {
+
+			if ( pos > this->end() || pos < this->begin() )
+				throw ( std::length_error("vector::insert") );
+			//in case of reallocation
+			difference_type distance = last - first;
+			difference_type diff = pos - this->begin();
+			this->_verify_capacity(distance);
+			iterator new_pos = this->begin() + diff;
+
+			this->_move_array_forward( this->begin(), this->end(), this->begin() + distance );
+			this->_move_array_forward( first, last, new_pos );
+			this->_size += distance;
+		};
 
 		/*************************
 		* @erase
