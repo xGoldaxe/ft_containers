@@ -34,10 +34,6 @@ if [ "$1" == "re" ]; then
    $rm -r tests_ft execs
 fi
 
-if [ "$2" == "--debug" ]; then
-   $rm -r tests_ft execs
-fi
-
 $mkdir -p outfile diff tests_ft execs
 /usr/bin/rsync --quiet -av -f"+ */" -f"- *" "$TESTPATH" "outfile"
 /usr/bin/rsync --quiet -av -f"+ */" -f"- *" "$TESTPATH" "execs"
@@ -142,6 +138,7 @@ if [ "$1" != "re" ] && [ "$1" != "" ] && [ "$1" != "--no=valgrind" ]; then
         if [ "$3" == "--no=valgrind" ] ; then
             valgrind=""
         fi
+        $rm -r tests_ft/${1}.test_ft.cpp execs/${1}.test execs/${1}.test_ft
         do_test "${1}.test.cpp" "--debug"
     else
         do_test "${1}.test.cpp"

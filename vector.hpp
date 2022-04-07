@@ -6,7 +6,7 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 16:54:09 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/07 16:31:50 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/07 23:29:13 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,13 +38,13 @@ class ft::vector
 		typedef const value_type& const_reference;
 		typedef typename Allocator::pointer pointer;
 		typedef typename Allocator::const_pointer const_pointer;
-		
+
 		/* ************************************************************************** */
 		/*                                                                            */
 		/*            @ITERATORS                                                      */
 		/*                                                                            */
 		/* ************************************************************************** */
-		
+
 		typedef ft::random_iterator<value_type, Allocator> iterator;
 		typedef const ft::random_iterator<value_type, Allocator> const_iterator;
 		typedef ft::reverse_iterator<iterator> reverse_iterator;
@@ -79,24 +79,6 @@ class ft::vector
 			return true;
 		}
 
-
-		// void	_move_array_forward( iterator begin, iterator end, iterator dest );
-		// void	_move_array_backward( iterator begin, iterator end, iterator dest );
-
-		// iterator _move_array( iterator begin, iterator end, iterator dest ) {
-
-		// 	iterator tmp = dest;
-
-		// 	if ( tmp == begin )
-		// 		return tmp;
-		// 	if ( begin < dest )
-		// 		_move_array_forward( begin, end, tmp );
-		// 	else
-		// 		_move_array_backward( begin, end, tmp );
-
-		// 	return dest;f
-		// }
-
 		iterator	_move_array_forward( iterator begin, iterator end, iterator dest ) {
 
 			reverse_iterator dest_it( dest + (end - begin) - static_cast<difference_type>(1) );
@@ -110,6 +92,18 @@ class ft::vector
 			}
 			return (dest);
 		}
+
+		iterator	_move_array_backward( iterator begin, iterator end, iterator dest ) {
+
+			if ( begin > end )
+				return (dest);
+			for ( iterator it = begin; it != end; ++dest, ++it ) {
+
+				this->_alctr.construct( &*dest, *it );
+			}
+			return (dest);
+		}
+
 
 		value_type*	copy_arr( size_type new_cap, value_type *ref, size_type ref_size ) {
 
@@ -131,25 +125,18 @@ class ft::vector
 
 			size_type new_cap = incr + this->_size;
 			if ( incr > this->max_size() || new_cap > this->max_size() ) {
-				
+
 				throw ( std::length_error("vector::_verify_capacity") );
 			}
 			if ( new_cap > this->_capacity ) {
-				
-				if ( new_cap <= this->_capacity * 2 )
-					new_cap = this->_capacity * 2;
-					
+
+				if ( new_cap <= this->capacity() * 2 )
+					new_cap = this->capacity() * 2;
+
 				this->reserve(new_cap);
 				return true;
 			}
 			return false;
-		}
-
-		size_type _incr_from_total( size_type new_size, size_type capacity ) {
-
-			if ( new_size > capacity )
-				return ( new_size - capacity );
-			return (0);
 		}
 
 		value_type *_size_cpy( size_type count, const value_type &value, value_type *dst ) {
@@ -168,12 +155,12 @@ class ft::vector
 		/*                                                                            */
 		/* ************************************************************************** */
 		size_type	getSize( void ) const	{
-		
+
 			return ( this->_size );
 		}
 
 		T*	getArr( void ) const	{
-		
+
 			return ( this->_arr );
 		}
 
@@ -188,11 +175,11 @@ class ft::vector
 		/*            @CONSTRUCTOR                                                    */
 		/*                                                                            */
 		/* ************************************************************************** */
-		
+
 		/*************************
 		* @DEFAULT CONSTRUCTOR
 		* ***********************/
-		vector( void ) : 
+		vector( void ) :
 			_alctr(),
 			_size( 0 ),
 			_capacity( _size ),
@@ -201,7 +188,7 @@ class ft::vector
 
 			// std::cout << "ft_vector created!" << std::endl;
 		};
-		
+
 		/*************************
 		* @ALLOC CONSTRUCTOR
 		* ***********************/
@@ -249,7 +236,7 @@ class ft::vector
 			_capacity( _size ),
 			_arr( this->_alctr.allocate( _capacity ) )
 		{
-			
+
 			size_type i = 0;
 			for ( InputIt it = first; it != last; ++it)
 			{
@@ -261,13 +248,13 @@ class ft::vector
 
 		/*************************
 		* @COPY CONSTRUCTOR
-		* ***********************/ 
+		* ***********************/
 		vector( const vector& other ) :
 			_alctr( other.get_allocator() ),
 			_size( other.getSize() ),
 			_capacity( other.getCapacity() ),
-			_arr( 
-				copy_arr( this->_capacity, other.getArr(), other.getSize() ) 
+			_arr(
+				copy_arr( this->_capacity, other.getArr(), other.getSize() )
 			)
 		{
 
@@ -279,12 +266,14 @@ class ft::vector
 		/*            @DESTRUCTOR                                                     */
 		/*                                                                            */
 		/* ************************************************************************** */
-		
+
 		/*************************
 		* @DESTRUCTOR
 		* ***********************/
 		~vector( void ) {
 			//cleanup
+			for ( iterator it = this->begin(); it != this->end(); ++it )
+				_alctr.destroy( &*it );
 			_alctr.deallocate( this->_arr, this->_capacity );
 			// std::cout << "ft_vector destroyed!" << std::endl;
 		};
@@ -413,7 +402,7 @@ class ft::vector
 
 		/*************************
 		* @DATA ACCESS
-		* return ptr NULL in case of 
+		* return ptr NULL in case of
 		* size of 0 to avoid invalid
 		* range
 		* ***********************/
@@ -447,23 +436,23 @@ class ft::vector
 		iterator begin(void) {
 
 			return iterator( this->_arr, this->_arr + this->_size, 0 );
-		};		
+		};
 		iterator end(void) {
 
 			return iterator( this->_arr, this->_arr + this->_size, this->_size );
 		};
 		const iterator begin(void) const {
-			
+
 			return iterator( this->_arr, this->_arr + this->_size, 0 );
 		};
 		const iterator end(void) const {
-			
+
 			return iterator( this->_arr, this->_arr + this->_size, this->_size );
 		};
 		/*************************
 		* @reverse iterators
 		* ***********************/
-		
+
 		reverse_iterator rbegin(void) {
 
 			return reverse_iterator( this->end() );
@@ -476,7 +465,7 @@ class ft::vector
 		const_reverse_iterator rbegin(void) const {
 
 			return reverse_iterator( this->begin() );
-		} 
+		}
 		const_reverse_iterator rend(void) const {
 
 			return reverse_iterator( this->end() );
@@ -515,7 +504,7 @@ class ft::vector
 		* ***********************/
 		void reserve( size_type new_cap ) {
 
-			if ( new_cap > this->max_size() ) 
+			if ( new_cap > this->max_size() )
 				throw ( std::length_error("vector::reserve") );
 			if ( new_cap <= this->_capacity )
 				return ;
@@ -529,7 +518,7 @@ class ft::vector
 		/*            @MODIFIERS                                                      */
 		/*                                                                            */
 		/* ************************************************************************** */
-		
+
 		/*************************
 		* @clear the vector and set
 		* size to 0, capacity stay
@@ -546,7 +535,7 @@ class ft::vector
 		* @insert
 		* ***********************/
 		iterator insert( iterator pos, const T& value ) {
-			
+
 			//in case of reallocation
 			difference_type diff = pos - this->begin();
 			this->_verify_capacity(1);
@@ -595,11 +584,60 @@ class ft::vector
 		* ***********************/
 
 		//check must be *(possible)
-		iterator erase( iterator pos );
+		//i added a security to avoid unitialized
+		//access that is not here on stl,
+		//i assume its a undefined behaviour
+		iterator erase( iterator pos ) {
+
+
+			if ( !(pos > this->end() || pos < this->end() || pos == this->end()) ) {
+				this->_size--;
+				return pos;
+			}
+			// if ( pos > this->end() || pos < this->begin() )
+			// 	throw ( std::length_error("vector::erase") );
+			this->_move_array_backward( pos + 1, this->end(), pos );
+			this->_alctr.destroy( &*(this->end() - 1) );
+			this->_size--;
+			return pos;
+		};
 
 		//if first == last, do nothing
-		iterator erase( iterator first, iterator last );
+		iterator erase( iterator first, iterator last ) {
 
+			difference_type distance_beg = first - this->begin();
+			this->_move_array_backward( last, this->end(), this->begin() + distance_beg );
+			this->_size -= last - first;
+			return first;
+		};
+
+
+		void resize( size_type count ) {
+
+			if ( count > ( 2 * this->size() ) ) 
+				this->reserve(count);
+			else if ( count > this->capacity() )
+				this->reserve( 2 * this->size() );
+			
+			if ( count > this->_size ) {
+				
+				size_type to_add = count - this->size();
+				for (size_type i = 0; i < to_add; i++)
+				{
+					value_type a = value_type();
+					this->_alctr.construct( &*(this->end() + i), a );
+				}
+			}
+			else {
+
+				for ( iterator it = this->begin() + count; it != this->end(); ++it )
+					this->_alctr.destroy( &*it );
+			}
+
+			this->_size = count;
+		};
+
+		// void resize( size_type count, T value = T() );
 		/*************************
 		* @push_back
 		* ***********************/
@@ -619,6 +657,5 @@ class ft::vector
 			this->_size--;
 		};
 };
-
 
 #endif
