@@ -22,17 +22,27 @@ cd ".."
 $make "relib" > /dev/null
 cd "tester"
 
+#flags
+re_flag=0
+debug_flag=0
+argv=""
+
+for var in "$@"
+do
+    if [ "$var" == "--no=valgrind" ] ; then
+        valgrind=""
+    elif [ "$var" == "--re" ] ; then
+        re_flag=1
+    elif [ "$var" == "--debug" ] ; then
+        debug_flag=1
+    else
+        argv=$var
+    fi
+done
+
+
 # create folders
 $rm -r outfile diff
-
-
-if [ "$1" == "--no=valgrind" ] ; then
-    valgrind=""
-fi
-
-if [ "$1" == "re" ]; then
-   $rm -r tests_ft execs
-fi
 
 $mkdir -p outfile diff tests_ft execs
 /usr/bin/rsync --quiet -av -f"+ */" -f"- *" "$TESTPATH" "outfile"
@@ -56,6 +66,15 @@ do_test() {
     EXECPATH="./execs/${TEST}"
     OUTFILEPATH="outfile/${NAME}.out"
 
+    declare -i i=0
+    # while [ ! -f "$EXECPATH" ] ; do
+    #     $CPP $CPPFLAGS $PATH $MAINPATH -o $EXECPATH
+    #     i=$(( i + 1 ))
+    #     if [ $i -gt 5 ] ;then
+    #         echo "Can't compile, now exiting ..."
+    #         exit 1
+    #     fi
+    # done
     if [ ! -f "$EXECPATH" ] ; then
         $CPP $CPPFLAGS $PATH $MAINPATH -o $EXECPATH
     fi
@@ -68,6 +87,8 @@ do_test() {
 
 
     # replace
+    FOLDER_PATH="$(/usr/bin/dirname "${TEST}")"
+    # cat 
     FTMAINPATH="tests_ft/${TEST}_ft.cpp"
     if [[ ! -f "$FTMAINPATH" ]]; then
         /bin/cp $MAINPATH $FTMAINPATH
@@ -78,6 +99,15 @@ do_test() {
 
     EXECPATH="./execs/${TEST}_ft"
     OUTFILEPATHFT="outfile/${NAME}_ft.out"
+    i=$(( 0 ))
+    # while [ ! -f "$EXECPATH" ] ; do
+    #     $CPP $CPPFLAGS $PATH $MAINPATH -o $EXECPATH
+    #     i=$(( i + 1 ))
+    #     if [ $i -gt 5 ] ;then
+    #         echo "Can't compile, now exiting."
+    #         exit 1
+    #     fi
+    # done
     if [ ! -f "$EXECPATH" ] ; then
         $CPP $CPPFLAGS $PATH $FTMAINPATH -o $EXECPATH
     fi
@@ -126,31 +156,35 @@ do_test() {
 }
 
 #launch one test
-if [ "$1" != "re" ] && [ "$1" != "" ] && [ "$1" != "--no=valgrind" ]; then
-    if [ ! -f "${TESTPATH}${1}.test.cpp" ] ; then
+if [ "$argv" != "" ]; then
+    if [ ! -f "${TESTPATH}${argv}.test.cpp" ] ; then
         echo "This test doesn't exist!"
         exit 0
     fi
-    if [ "$2" == "re" ] ; then
-        $rm "tests_ft/${1}.test_ft.cpp" "execs/${1}.test_ft" "execs/${1}.test"
+    if [ $re_flag -eq 1 ] ; then
+        $rm "tests_ft/${argv}.test_ft.cpp" "execs/${argv}.test_ft" "execs/${argv}.test"
     fi
-    if [ "$2" == "--debug" ] ; then
-        if [ "$3" == "--no=valgrind" ] ; then
-            valgrind=""
-        fi
-        $rm -r tests_ft/${1}.test_ft.cpp execs/${1}.test execs/${1}.test_ft
-        do_test "${1}.test.cpp" "--debug"
+    if [ $debug_flag -eq 1 ] ; then
+        $rm -r tests_ft/${argv}.test_ft.cpp execs/${argv}.test execs/${argv}.test_ft
+        do_test "${argv}.test.cpp" "--debug"
     else
-        do_test "${1}.test.cpp"
+        do_test "${argv}.test.cpp"
     fi
     exit 0
 fi
 
-printf "=========VECTOR=========\n\n"
+printf "=========TESTS=========\n\n"
 
-FILES=`/usr/bin/ls ${TESTPATH}*.cpp`
-FILES_R=`/usr/bin/ls ${TESTPATH}*/*.cpp`
-FILES+="$FILES_R"
+FILES=`/usr/bin/find ${TESTPATH} -name "*.cpp"`
+
+echo $FILES_R
+
+if [ $re_flag -eq 1 ] ;then
+    $rm -r tests_ft execs
+    $mkdir -p tests_ft execs
+    /usr/bin/rsync --quiet -av -f"+ */" -f"- *" "$TESTPATH" "execs"
+    /usr/bin/rsync --quiet -av -f"+ */" -f"- *" "$TESTPATH" "tests_ft"
+fi
 
 for TEST in $FILES
 do
@@ -158,4 +192,4 @@ do
 
 done
 
-printf "\n=======END  VECTOR=======\n"
+printf "\n=======END  TESTS=======\n"
