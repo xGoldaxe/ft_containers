@@ -27,35 +27,35 @@ int main( void ) {
     t[4] = "allez";
 
 
-	t.resize(8);
+	t.resize(8, "--value");
 	std::cout << "MEM_USAGE: " << t.size() << "/" << t.capacity() << std::endl;
 
 
-	t.resize(11);
+	t.resize(11, "--value");
 	std::cout << "MEM_USAGE: " << t.size() << "/" << t.capacity() << std::endl;
 
-	t.resize(30);
-	std::cout << "MEM_USAGE: " << t.size() << "/" << t.capacity() << std::endl;
-	print_vector(t);
-
-	t.resize(2);
+	t.resize(30, "--value");
 	std::cout << "MEM_USAGE: " << t.size() << "/" << t.capacity() << std::endl;
 	print_vector(t);
 
-    t.resize(2);
+	t.resize(2, "--value");
+	std::cout << "MEM_USAGE: " << t.size() << "/" << t.capacity() << std::endl;
+	print_vector(t);
+
+    t.resize(2, "--value");
 	std::cout << "MEM_USAGE: " << t.size() << "/" << t.capacity() << std::endl;
 
     std::cout << "<-----------{with int}----------->" << std::endl;
 
     std::vector<int> to( static_cast<std::size_t>(2), 666 );
-	to.resize(4);
+	to.resize(4, 333);
 	std::cout << "MEM_USAGE: " << to.size() << "/" << to.capacity() << std::endl;
 	print_vector(to);
 
     std::cout << "<-----------{exception}----------->" << std::endl;
     try
     {
-        t.resize(-1);
+        t.resize(-1, "nop");
     }
     catch(const std::exception& e)
     {

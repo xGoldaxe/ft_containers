@@ -1,35 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft.hpp                                             :+:      :+:    :+:   */
+/*   map.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/31 17:11:27 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/11 12:40:39 by pleveque         ###   ########.fr       */
+/*   Created: 2022/04/11 14:27:43 by pleveque          #+#    #+#             */
+/*   Updated: 2022/04/11 14:32:33 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#ifndef MAP_HPP
+#	define MAP_HPP
 
-#ifndef FT_HPP
-#	define FT_HPP
+#include "ft.hpp"
 
-#include <iostream>
-#include <string>
-#include <typeinfo>
-#include <memory>
-#include <stdexcept>
-#include <stdlib.h>
-#include <sstream>
-#include <stdexcept>
-#include <math.h>
-#include <algorithm>
+template<
+	class Key,
+	class T,
+	class Compare = std::less<Key>,
+	class Allocator = std::allocator<std::pair<const Key, T> >
+>
 
-#include "ft_namespace.hpp"
-#include "vector.hpp"
-#include "ft_namespace.hpp"
-#include "random_iterator.hpp"
-#include "reverse_iterator.hpp"
-#include "vectorComparaison.hpp"
+
+class ft::map {
+
+}
+
+
 
 #endif

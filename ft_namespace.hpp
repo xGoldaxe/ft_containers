@@ -6,7 +6,7 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 17:09:42 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/03 18:59:08 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/11 14:27:33 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,17 @@ namespace ft {
     template <typename T, typename Allocator>
     class vector;
     /* vector */
+
+    /* map */
+    template <
+        class Key,
+        class T,
+        class Compare,
+        class Allocator
+    >
+    class map;
+    /* map */
+
 
     template <typename T, typename Allocator>
     class random_iterator;

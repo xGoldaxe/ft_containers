@@ -4,8 +4,8 @@
 
 int main( void ) {
 
-    ft::vector<std::string> t( static_cast<std::size_t>(5), "" );
-    ft::vector<std::string> to( static_cast<std::size_t>(5), "" );
+    std::vector<std::string> t( static_cast<std::size_t>(5), "" );
+    std::vector<std::string> to( static_cast<std::size_t>(5), "" );
 
     std::cout << "<-----------{self}----------->" << std::endl;
 	std::cout << (t == t) << std::endl;
@@ -21,8 +21,8 @@ int main( void ) {
 
     std::cout << "<-----------{NOT EQUAL}----------->" << std::endl;
 
-    ft::vector<std::string> t2( static_cast<std::size_t>(5), "" );
-    ft::vector<std::string> to2( static_cast<std::size_t>(5), "" );
+    std::vector<std::string> t2( static_cast<std::size_t>(5), "" );
+    std::vector<std::string> to2( static_cast<std::size_t>(5), "" );
 
     std::cout << "<-----------{self}----------->" << std::endl;
 	std::cout << (t2 != t2) << std::endl;

@@ -6,7 +6,7 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 16:54:09 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/07 23:29:13 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/11 13:01:31 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -243,7 +243,6 @@ class ft::vector
 				this->_alctr.construct( this->_arr + i, *it );
 				++i;
 			}
-			// std::cout << "ft_vector range constructor, size: " << this->_size << std::endl;
 		}
 
 		/*************************
@@ -291,13 +290,14 @@ class ft::vector
 		vector &   operator=( vector const & other ) {
 
 
-			// if (other != *this)
+			if (*this == other)
+				return (*this);
 			//cleanup before modification
 			_alctr.deallocate( this->_arr, this->_capacity );
 
 			this->_alctr = other.get_allocator();
 			this->_size = other.getSize();
-			this->_capacity = other.getCapacity();
+			this->_capacity = other.getSize();
 			this->_arr = copy_arr( this->_capacity, other.getArr(), other.getSize() );
 			return (*this);
 		};
@@ -614,6 +614,11 @@ class ft::vector
 
 		void resize( size_type count ) {
 
+			resize( count, value_type() );
+		};
+
+		void resize( size_type count, T value = T() ) {
+
 			if ( count > ( 2 * this->size() ) ) 
 				this->reserve(count);
 			else if ( count > this->capacity() )
@@ -624,8 +629,7 @@ class ft::vector
 				size_type to_add = count - this->size();
 				for (size_type i = 0; i < to_add; i++)
 				{
-					value_type a = value_type();
-					this->_alctr.construct( &*(this->end() + i), a );
+					this->_alctr.construct( &*(this->end() + i), value );
 				}
 			}
 			else {
@@ -636,8 +640,6 @@ class ft::vector
 
 			this->_size = count;
 		};
-
-		// void resize( size_type count, T value = T() );
 		/*************************
 		* @push_back
 		* ***********************/
@@ -656,6 +658,29 @@ class ft::vector
 			this->_alctr.destroy( &*(this->end() - 1) );
 			this->_size--;
 		};
+
+		/* ************************************************************************** */
+		/*                                                                            */
+		/*            @swap                                                           */
+		/*                                                                            */
+		/* ************************************************************************** */
+		void	swap( vector& other ) {
+
+			Allocator 	tmp_alctr = other.get_allocator();
+			size_type	tmp_size = other.size();
+			size_type	tmp_capacity = other.capacity();
+			T* 			tmp_arr = other.data();
+
+			other._alctr = this->_alctr; 
+			other._size = this->_size; 
+			other._capacity = this->_capacity; 
+			other._arr = this->_arr; 
+
+			this->_alctr = tmp_alctr; 
+			this->_size = tmp_size; 
+			this->_capacity = tmp_capacity; 
+			this->_arr = tmp_arr; 
+		}
 };
 
 #endif

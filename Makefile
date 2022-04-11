@@ -13,7 +13,7 @@ CPPFLAGS	=	-Wall -Wextra -Werror -I. -std=c++98
 
 RM		=	rm -rf
 
-CCP		=	c++
+CCP		=	/usr/bin/c++
 
 # COLORS
 NONE			= \033[0m
@@ -28,17 +28,17 @@ RUN_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
   $(eval $(RUN_ARGS):;@:)
 
 ./.build/%.o : %.cpp
-		@mkdir -p .build
+		@/usr/bin/mkdir -p .build
 		@$(CCP) ${CPPFLAGS} -I. -o $@ -c $?
-		@printf "${B_MAGENTA}Compilling $? ...\n${NONE}"
+		@/usr/bin/printf "${B_MAGENTA}Compilling $? ...\n${NONE}"
 
 
 all:	
-		@mkdir -p .build
-		@make ${NAME} --no-print-directory
+		@/usr/bin/mkdir -p .build
+		@/usr/bin/make ${NAME} --no-print-directory
 
 test:
-		make lib --no-print-directory
+		/usr/bin/make lib --no-print-directory
 		cd tester && ./test.sh $(RUN_ARGS)
 
 #always relink
