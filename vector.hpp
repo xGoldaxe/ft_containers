@@ -6,7 +6,7 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 16:54:09 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/11 13:01:31 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/14 17:24:36 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@
 #include "reverse_iterator.hpp"
 
 template <
-	typename T,
-	typename Allocator = std::allocator<T>
+	class T,
+	class Allocator = std::allocator<T>
 >
 
 

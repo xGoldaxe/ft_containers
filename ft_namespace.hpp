@@ -6,7 +6,7 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 17:09:42 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/11 14:27:33 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/14 18:28:55 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 namespace ft {
 
     /* vector */
-    template <typename T, typename Allocator>
+    template <class T, class Allocator>
     class vector;
     /* vector */
 
