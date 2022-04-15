@@ -1,55 +1,73 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   tree.hpp                                           :+:      :+:    :+:   */
+/*   redBlackTree.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/14 15:40:37 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/14 15:41:01 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/15 20:05:59 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <iostream>
 
-template < typename T >
+template < class T >
 class DataType {
 	private:
 
 	public:
-		T data;
+		T 	data;
 		bool (*_compare)( T a, T b );
 
-		DataType() : data( T() ), _compare(NULL) {};
-		DataType( const T& b ) : data( b.data ), _compare( b._compare ) {};
+		DataType() : 
+			data( T() ), 
+			_compare(NULL)
+		{};
+		
+		DataType( const DataType& rhs ) : 
+			data( rhs.data ),
+			_compare( rhs._compare )
+		{};
+
+		DataType( T data, bool (*compare)( T a, T b ) ) : 
+			data( data ),
+			_compare( compare )
+		{};
+		
 		~DataType() {};
-		DataType &operator=( const DataType& b ) {
-			this->data = b.data;
+		DataType &operator=( const DataType& rhs ) {
+			this->data = rhs.data;
 			return *this;
 		};
 
-		DataType &operator=( const T& data ) { 
+		DataType &operator=( T* data ) { 
 			this->data = data;
 			return *this;
 		};
+
 		/*************************
 		* @comparaison
 		* ***********************/
 	
-		bool operator<( const DataType& b ) { return _compare(this->data, b.data); }
-		bool operator<( const T& b ) { return _compare(this->data, b); }
+		bool operator<( const DataType& b ) { 
+
+			return !_compare(this->data, b.data); 
+		}
 		
-		bool operator>( const DataType& b ) { return _compare(b.data, this->data); }
-		bool operator>( const T& b ) { return _compare(b, this->data); }
+		bool operator>( const DataType& b ) {
+			
+			return !_compare(b.data, this->data);
+		}
 
-		bool operator==( const DataType& b ) { return ( !_compare(this->data, b.data) && !_compare(b.data, this->data) ); }
-		bool operator==( const T& b ) { return ( !_compare(this->data, b) && !_compare(b, this->data) ); }
+		bool operator==( const DataType& b ) { 
+			
+			return ( !this->operator>(b) && !this->operator<(b) );
+		};
 	
-		bool operator!=( const DataType& b ) { return !( this->operator==(b) ); }
-		bool operator!=( const T& b ) { return !( this->operator==(b) ); }
+		bool operator!=( const DataType& b ) { return !( this->operator==(b) ); };
 
-		bool operator<=( const T&b ) { return ( this->operator==(b) || this->operator<(b) ); };
-		bool operator<=( const DataType&b ) { return ( this->operator==(b) || this->operator<(b) ); };
+		bool operator<=( const DataType& b ) { return ( this->operator==(b) || this->operator<(b) ); };
 
 		/*************************
 		* @overload
@@ -60,19 +78,22 @@ class DataType {
 };
 
 template < class Data >
-struct Node {
-	Data data;
-	Node *parent;
-	Node *left;
-	Node *right;
-	int color;
+class Node {
+	public:
+		Data *data;
+		Node *parent;
+		Node *left;
+		Node *right;
+		int	color;
 
+		//operator !=
 };
 
-template < typename T >
+template < class T >
 class RedBlackTree {
 	private:
-		typedef Node<T> node_t; 
+		typedef DataType<T> data_t;
+		typedef Node<data_t> node_t; 
 		typedef node_t *NodePtr;
 		NodePtr root;
 		NodePtr TNULL;
@@ -80,12 +101,12 @@ class RedBlackTree {
 		bool (*_compare)( T a, T b );
 
 		void initializeNULLNode(NodePtr node, NodePtr parent) {
-			node->data = 0;
+			node->data = NULL;
 			node->parent = parent;
 			node->left = NULL;
 			node->right = NULL;
 			node->color = 0;
-			node->_compare = this->_compare;
+			// node->_compare = this->_compare;
 		}
 
 		// Preorder
@@ -101,7 +122,8 @@ class RedBlackTree {
 		void inOrderHelper(NodePtr node) {
 			if (node != TNULL) {
 				inOrderHelper(node->left);
-				std::cout << node->data << " ";
+				// std::cout << node->data << " ";
+				std::cout << node->data->data.first << " " << node->data->data.second << std::endl;
 				inOrderHelper(node->right);
 			}
 		}
@@ -115,12 +137,13 @@ class RedBlackTree {
 			}
 		}
 
-		NodePtr searchTreeHelper(NodePtr node, T key) {
-			if (node == TNULL || node->data == key) {
+		NodePtr searchTreeHelper(NodePtr node, data_t& key) {
+
+			if (node == TNULL || *(node->data) == key) {
 				return node;
 			}
 
-			if (node->data > key) {
+			if (*(node->data) > key) {
 				return searchTreeHelper(node->left, key);
 			}
 			return searchTreeHelper(node->right, key);
@@ -338,8 +361,12 @@ class RedBlackTree {
 			postOrderHelper(this->root);
 		}
 
-		NodePtr searchTree(int k) {
-			return searchTreeHelper(this->root, k);
+		T &searchTree( const T &k) {
+			data_t data_key(k, this->_compare);
+			NodePtr ptr = searchTreeHelper(this->root, data_key);
+			if ( ptr == TNULL )
+				throw std::out_of_range("searchTree: key does not exist");
+			return ( ptr->data->data );
 		}
 
 		NodePtr minimum(NodePtr node) {
@@ -422,21 +449,24 @@ class RedBlackTree {
 		}
 
 		// Inserting a node
-		void insert(T key) {
+		void insert(T data) {
 
 			NodePtr node = new node_t;
 			node->parent = NULL;
-			node->data = key;
+
+			node->data = new data_t(data, this->_compare);
+			
 			node->left = TNULL;
 			node->right = TNULL;
 			node->color = 1;
+			
 
 			NodePtr y = NULL;
 			NodePtr x = this->root;
 
 			while (x != TNULL) {
 				y = x;
-				if (node->data < x->data) {
+				if (*(node->data) < *(x->data)) {
 					x = x->left;
 				} else {
 					x = x->right;
@@ -445,8 +475,8 @@ class RedBlackTree {
 
 			node->parent = y;
 			if (y == NULL) {
-					root = node;
-			} else if (node->data < y->data) {
+				this->root = node;
+			} else if (*(node->data) < *(y->data)) {
 				y->left = node;
 			} else {
 				y->right = node;

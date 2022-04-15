@@ -6,7 +6,7 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/11 14:27:43 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/14 18:47:44 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/15 20:04:01 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,12 @@
 #	define MAP_HPP
 
 #include "ft.hpp"
+
+template < class value_type, class compare >
+bool	compare_template( value_type a, value_type b ) {
+
+	return !compare()( a.first, b.first );
+};
 
 
 template <
@@ -33,7 +39,8 @@ class ft::map {
 		/* ************************************************************************** */
 		typedef Key 								key_type;
 		typedef T									mapped_type;
-		typedef std::pair<const Key, T> 			value_type;
+		typedef std::pair<Key, T> 					value_type;
+		// typedef std::pair<const Key, T> 			value_type;
 		typedef std::size_t 						size_type;
 		typedef std::ptrdiff_t 						difference_type;
 		typedef Compare								key_compare;
@@ -50,12 +57,14 @@ class ft::map {
 		// typedef ft::reverse_iterator<const_iterator>	const_reverse_iterator;
 
 	private:
-			typedef Node<std::pair<key_type, mapped_type> >	node_type;
+			typedef RedBlackTree<value_type>	tree_type;
 
-			Allocator 	_alctr;
-			Compare		_cmpr;
-			size_type 	_size;
-			node_type		*_root;
+			Allocator		_alctr;
+			// Compare			_cmpr;
+			size_type		_size;
+			tree_type		_tree;
+
+
 
 
 	public:
@@ -64,7 +73,11 @@ class ft::map {
 		/*            @CONSTRUCTOR                                                    */
 		/*                                                                            */
 		/* ************************************************************************** */
-		map() : _alctr(), _cmpr(), _size(0), _root(NULL) {};
+		map() : 
+			_alctr( Allocator() ),
+			_size(0),
+			_tree( tree_type( &compare_template<value_type, Compare> ) )
+		{};
 
 		explicit map( const Compare& comp, const Allocator& alloc = Allocator() );
 
@@ -81,7 +94,10 @@ class ft::map {
 		/* ************************************************************************** */
 		~map(void) {};
 
-		get_allocator(void) { return this->_alctr };
+		Allocator get_allocator(void) { 
+			
+			return this->_alctr; 
+		};
 
 		/* ************************************************************************** */
 		/*                                                                            */
@@ -89,15 +105,31 @@ class ft::map {
 		/*                                                                            */
 		/* ************************************************************************** */
 
+		T& at( const Key& key ) {
+			
+			value_type pair( key, T() );
+			return ( this->_tree.searchTree( pair ).second );
+		}
+
+		void	inOrder(void) {
+
+			this->_tree.inorder();
+		}
+
 		/* ************************************************************************** */
 		/*                                                                            */
 		/*            @MODIFIERS                                                      */
 		/*                                                                            */
 		/* ************************************************************************** */
 		// std::pair<iterator, bool> insert( const value_type& value);
+		void insert( value_type value ) {
+
+			this->_tree.insert(value);
+			this->_size++;
+		};
 
 		template < class IntputIt >
-		void insert( IntputIT first, IntputIt last );
+		void insert( IntputIt first, IntputIt last );
 };
 
 
