@@ -6,7 +6,7 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/11 14:27:43 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/16 17:40:08 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/16 18:49:43 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,15 +175,48 @@ class ft::map {
 
 		/* ************************************************************************** */
 		/*                                                                            */
+		/*            @CAPACITY                                                       */
+		/*                                                                            */
+		/* ************************************************************************** */
+		
+		bool empty() const {
+
+			return ( this->begin() == this->end() );
+		};
+
+		size_type size() const {
+
+			return this->_size;
+		}
+
+		size_type max_size() const {
+
+			return (std::numeric_limits<difference_type>::max() / sizeof(Node<DataType<value_type> >) );
+		}
+
+		/* ************************************************************************** */
+		/*                                                                            */
 		/*            @MODIFIERS                                                      */
 		/*                                                                            */
 		/* ************************************************************************** */
-		// std::pair<iterator, bool> insert( const value_type& value);
-		void insert( value_type value ) {
+		void clear() {
 
-			this->_tree.insert(value);
-			this->_size++;
+			this->_tree.cleanTree();
+			this->_size = 0;
 		};
+
+		/*************************
+		* @insert
+		* ***********************/
+
+		std::pair<iterator, bool> insert( const value_type& value) {
+
+			Node<DataType<value_type> > it = this->_tree.insert(value);
+			this->_size++;
+			return ( std::make_pair( iterator( &this->_tree, it ), true ) );
+		};
+
+		iterator insert( iterator hint, const value_type& value );
 
 		template < class IntputIt >
 		void insert( IntputIt first, IntputIt last );

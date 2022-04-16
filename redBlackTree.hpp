@@ -6,7 +6,7 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/14 15:40:37 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/16 17:12:49 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/16 18:50:18 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -372,6 +372,7 @@ class RedBlackTree {
 
 		void cleanTree() {
 			postOrderFree(this->root);
+			this->root = TNULL;
 		}
 
 		T &searchTree( const T &k ) {
@@ -470,7 +471,7 @@ class RedBlackTree {
 		}
 
 		// Inserting a node
-		void insert(T data) {
+		node_t insert(T data) {
 
 			NodePtr node = new node_t;
 			node->parent = NULL;
@@ -514,6 +515,7 @@ class RedBlackTree {
 			}
 
 			insertFix(node);
+			return node;
 		}
 
 		NodePtr getRoot() const {
