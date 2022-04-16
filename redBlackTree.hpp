@@ -6,7 +6,7 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/14 15:40:37 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/15 20:05:59 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/16 17:12:49 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,25 +68,31 @@ class DataType {
 		bool operator!=( const DataType& b ) { return !( this->operator==(b) ); };
 
 		bool operator<=( const DataType& b ) { return ( this->operator==(b) || this->operator<(b) ); };
-
-		/*************************
-		* @overload
-		* ***********************/
-		std::ostream &  operator<<( DataType const & f ) {
-			std::cout << f;
-		};
 };
 
 template < class Data >
 class Node {
 	public:
-		Data *data;
+		Data data;
 		Node *parent;
 		Node *left;
 		Node *right;
 		int	color;
 
-		//operator !=
+		bool operator==( const Node& rhs ) {
+
+			return (
+				data == rhs.data &&
+				parent == rhs.parent &&
+				left == rhs.left &&
+				right == rhs.right &&
+				color == rhs.color
+			);
+		}
+		bool operator!=( const Node& rhs ) {
+
+			return !( this->operator==(rhs) );
+		}
 };
 
 template < class T >
@@ -123,27 +129,27 @@ class RedBlackTree {
 			if (node != TNULL) {
 				inOrderHelper(node->left);
 				// std::cout << node->data << " ";
-				std::cout << node->data->data.first << " " << node->data->data.second << std::endl;
+				std::cout << node->data.data.first << " " << node->data.data.second << std::endl;
 				inOrderHelper(node->right);
 			}
 		}
 
 		// Post order
-		void postOrderHelper(NodePtr node) {
+		void postOrderFree(NodePtr node) {
 			if (node != TNULL) {
-				postOrderHelper(node->left);
-				postOrderHelper(node->right);
-				std::cout << node->data << " ";
+				postOrderFree(node->left);
+				postOrderFree(node->right);
+				delete node;
 			}
 		}
 
 		NodePtr searchTreeHelper(NodePtr node, data_t& key) {
 
-			if (node == TNULL || *(node->data) == key) {
+			if (node == TNULL || node->data == key) {
 				return node;
 			}
 
-			if (*(node->data) > key) {
+			if (node->data > key) {
 				return searchTreeHelper(node->left, key);
 			}
 			return searchTreeHelper(node->right, key);
@@ -339,14 +345,21 @@ class RedBlackTree {
 	RedBlackTree() {}
 
 	public:
+		~RedBlackTree(void) {
+			
+			cleanTree();
+			delete TNULL;
+		}
 
 		RedBlackTree( bool (*compare)( T a, T b ) ) {
+			
+			this->_compare = compare;
+
 			TNULL = new node_t;
 			TNULL->color = 0;
 			TNULL->left = NULL;
 			TNULL->right = NULL;
 			root = TNULL;
-			this->_compare = compare;
 		}
 
 		void preorder() {
@@ -357,52 +370,60 @@ class RedBlackTree {
 			inOrderHelper(this->root);
 		}
 
-		void postorder() {
-			postOrderHelper(this->root);
+		void cleanTree() {
+			postOrderFree(this->root);
 		}
 
-		T &searchTree( const T &k) {
+		T &searchTree( const T &k ) {
 			data_t data_key(k, this->_compare);
 			NodePtr ptr = searchTreeHelper(this->root, data_key);
 			if ( ptr == TNULL )
 				throw std::out_of_range("searchTree: key does not exist");
-			return ( ptr->data->data );
+			return ( ptr->data.data );
 		}
 
-		NodePtr minimum(NodePtr node) {
+		NodePtr minimum(NodePtr node) const {
 			while (node->left != TNULL) {
 				node = node->left;
 			}
 			return node;
 		}
 
-		NodePtr maximum(NodePtr node) {
+		NodePtr maximum(NodePtr node) const {
 			while (node->right != TNULL) {
 				node = node->right;
 			}
 			return node;
 		}
 
-		NodePtr successor(NodePtr x) {
+		NodePtr successor(NodePtr x) const {
+			if (x == NULL) {
+				return NULL;
+			}
+			
 			if (x->right != TNULL) {
 				return minimum(x->right);
 			}
 
 			NodePtr y = x->parent;
-			while (y != TNULL && x == y->right) {
+			while (y != NULL && y != TNULL && x == y->right) {
 				x = y;
 				y = y->parent;
 			}
 			return y;
 		}
 
-		NodePtr predecessor(NodePtr x) {
+		NodePtr predecessor(NodePtr x) const {
+			if (x == NULL) {
+				return NULL;
+			}
+
 			if (x->left != TNULL) {
 				return maximum(x->left);
 			}
 
 			NodePtr y = x->parent;
-			while (y != TNULL && x == y->left) {
+			while (y != NULL && y != TNULL && x == y->left) {
 				x = y;
 				y = y->parent;
 			}
@@ -454,7 +475,8 @@ class RedBlackTree {
 			NodePtr node = new node_t;
 			node->parent = NULL;
 
-			node->data = new data_t(data, this->_compare);
+			node->data.data = data;
+			node->data._compare = this->_compare;
 			
 			node->left = TNULL;
 			node->right = TNULL;
@@ -466,7 +488,7 @@ class RedBlackTree {
 
 			while (x != TNULL) {
 				y = x;
-				if (*(node->data) < *(x->data)) {
+				if (node->data < x->data) {
 					x = x->left;
 				} else {
 					x = x->right;
@@ -476,7 +498,7 @@ class RedBlackTree {
 			node->parent = y;
 			if (y == NULL) {
 				this->root = node;
-			} else if (*(node->data) < *(y->data)) {
+			} else if (node->data < y->data) {
 				y->left = node;
 			} else {
 				y->right = node;
@@ -494,7 +516,7 @@ class RedBlackTree {
 			insertFix(node);
 		}
 
-		NodePtr getRoot() {
+		NodePtr getRoot() const {
 			return this->root;
 		}
 
@@ -508,7 +530,15 @@ class RedBlackTree {
 			}
 		}
 
-		NodePtr getBegin() {
+		NodePtr getBegin() const {
+			if (this->root == TNULL)
+				return NULL;
 			return this->minimum( this->root );
+		}
+
+		NodePtr getEnd() const {
+			if (this->root == TNULL)
+				return NULL;
+			return this->maximum( this->root );
 		}
 };

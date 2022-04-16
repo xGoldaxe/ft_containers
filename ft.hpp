@@ -6,7 +6,7 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 17:11:27 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/14 18:28:29 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/16 14:16:00 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,5 +33,6 @@
 #include "vectorComparaison.hpp"
 #include "redBlackTree.hpp"
 #include "map.hpp"
+#include "map_iterator.hpp"
 
 #endif

@@ -91,7 +91,9 @@ do_test() {
     # cat 
     FTMAINPATH="tests_ft/${TEST}_ft.cpp"
     if [[ ! -f "$FTMAINPATH" ]]; then
-        /bin/cp $MAINPATH $FTMAINPATH
+        /bin/touch $FTMAINPATH
+        echo "#include \"../ft.hpp\"" >> $FTMAINPATH
+        /bin/cat $MAINPATH >> $FTMAINPATH
         /usr/bin/sed -i -- 's/std::vector/ft::vector/g' $FTMAINPATH
         /usr/bin/sed -i -- 's/std::reverse_iterator/ft::reverse_iterator/g' $FTMAINPATH
         /usr/bin/sed -i -- 's/std::map/ft::map/g' $FTMAINPATH

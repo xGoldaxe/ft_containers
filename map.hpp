@@ -6,7 +6,7 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/11 14:27:43 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/15 20:04:01 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/16 17:40:08 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,10 +51,7 @@ class ft::map {
 		typedef typename Allocator::const_pointer	const_pointer;
 
 		/* pointer */
-		// typedef ft::map_iterator<value_type>	iterator;
-		// typedef const ft::map_iterator<value_type>	const_iterator;
-		// typedef ft::reverse_iterator<iterator>	reverse_iterator;
-		// typedef ft::reverse_iterator<const_iterator>	const_reverse_iterator;
+
 
 	private:
 			typedef RedBlackTree<value_type>	tree_type;
@@ -109,11 +106,71 @@ class ft::map {
 			
 			value_type pair( key, T() );
 			return ( this->_tree.searchTree( pair ).second );
+		};
+
+		T& operator[]( const Key& key ) {
+
+			try
+			{
+				return ( this->at(key) );
+			}
+			catch(const std::exception& e)
+			{
+				this->insert( std::make_pair( key, T() ) );
+				return ( this->at(key) );
+			}
+		};
+
+		/* ************************************************************************** */
+		/*                                                                            */
+		/*            @ITERATORS                                                      */
+		/*                                                                            */
+		/* ************************************************************************** */
+		typedef ft::map_iterator<value_type>			iterator;
+		typedef const ft::map_iterator<value_type>		const_iterator;
+		typedef ft::reverse_iterator<iterator>			reverse_iterator;
+		typedef ft::reverse_iterator<const_iterator>	const_reverse_iterator;
+
+		iterator begin() {
+
+			Node<DataType<value_type> > *begin = this->_tree.getBegin();
+			return iterator( &this->_tree, begin );
 		}
 
-		void	inOrder(void) {
+		const_iterator begin() const {
 
-			this->_tree.inorder();
+			Node<DataType<value_type> > *begin = this->_tree.getBegin();
+			return const_iterator( &this->_tree, begin );
+		}
+
+		iterator end() {
+
+			return iterator( &this->_tree, NULL );
+		}
+
+		const_iterator end() const {
+
+			return const_iterator( &this->_tree, NULL );
+		}
+
+		reverse_iterator rbegin() {
+
+			return reverse_iterator( this->end() );
+		}
+
+		const_reverse_iterator rbegin() const {
+
+			return const_reverse_iterator( this->end() );
+		}
+
+		reverse_iterator rend() {
+
+			return reverse_iterator( this->begin() );
+		}
+
+		const_reverse_iterator rend() const {
+
+			return const_reverse_iterator( this->begin() );
 		}
 
 		/* ************************************************************************** */

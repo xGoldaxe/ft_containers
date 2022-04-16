@@ -6,7 +6,7 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 16:55:49 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/15 20:01:59 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/16 16:46:11 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int main( void ) {
 
     typedef std::pair<int, std::string> pair_type;
 
-    ft::map<int, std::string> bst;
+    std::map<int, std::string> bst;
 
     pair_type pair = std::make_pair(9, "salut");
 	bst.insert(pair);
@@ -34,8 +34,10 @@ int main( void ) {
 	pair = std::make_pair(7, "vous");
 	bst.insert(pair);
 
-    bst.inOrder();
-    std::cout << bst.at(19) << std::endl;
+    for (std::map<int, std::string>::iterator it = bst.begin(); it != bst.end(); ++it) {
+
+		std::cout << it->first << std::endl;
+	}
 
     return (0);
 }
