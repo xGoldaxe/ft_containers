@@ -53,10 +53,6 @@ class ft::map_iterator : public std::iterator
 
 			return ( this->_tree );
 		}
-		node_t* getActual( void ) const	{
-		
-			return ( this->_actual );
-		}
 		/* ************************************************************************** */
 		/*                                                                            */
 		/*            @utils                                                          */
@@ -79,6 +75,16 @@ class ft::map_iterator : public std::iterator
 		}
 
 	public:
+		/* ************************************************************************** */
+		/*                                                                            */
+		/*            @utils                                                          */
+		/*                                                                            */
+		/* ************************************************************************** */
+		node_t* getActual( void ) const	{
+		
+			return ( this->_actual );
+		}
+
 		/* ************************************************************************** */
 		/*                                                                            */
 		/*            @LEGACY CONSTRUCTOR                                             */
@@ -111,8 +117,8 @@ class ft::map_iterator : public std::iterator
 		* ***********************/
 		map_iterator &operator=( const map_iterator & rhs ) {
 
-			this->_position = rhs.getActual();
-			this->_position = rhs.getTree();
+			this->_actual = rhs.getActual();
+			this->_tree = rhs.getTree();
 			return (*this);
 		};
 

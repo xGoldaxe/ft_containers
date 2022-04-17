@@ -6,7 +6,7 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/14 15:40:37 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/16 18:50:18 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/17 15:29:34 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -228,26 +228,10 @@ class RedBlackTree {
 		v->parent = u->parent;
 	}
 
-  	void deleteNodeHelper(NodePtr node, T key) {
+  	void deleteNodeHelper( NodePtr node ) {
 
-		NodePtr z = TNULL;
+		NodePtr z = node;
 		NodePtr x, y;
-		while (node != TNULL) {
-	  		if (node->data == key) {
-				z = node;
-	  		}
-
-	 		if (node->data <= key) {
-				node = node->right;
-			} else {
-				node = node->left;
-			}
-		}
-
-		if (z == TNULL) {
-			std::cout << "Key not found in the tree" << std::endl;
-			return;
-		}
 
 		y = z;
 		int y_original_color = y->color;
@@ -280,7 +264,7 @@ class RedBlackTree {
 		}
   	}
 
-  // For balancing the tree after insertion
+  	// For balancing the tree after insertion
   	void insertFix(NodePtr k) {
 		NodePtr u;
 		while (k->parent->color == 1) {
@@ -375,12 +359,13 @@ class RedBlackTree {
 			this->root = TNULL;
 		}
 
-		T &searchTree( const T &k ) {
+		//return null in case key doesnt exist
+		NodePtr searchTree( const T &k ) {
 			data_t data_key(k, this->_compare);
 			NodePtr ptr = searchTreeHelper(this->root, data_key);
 			if ( ptr == TNULL )
-				throw std::out_of_range("searchTree: key does not exist");
-			return ( ptr->data.data );
+				return NULL;
+			return ( ptr );
 		}
 
 		NodePtr minimum(NodePtr node) const {
@@ -471,7 +456,8 @@ class RedBlackTree {
 		}
 
 		// Inserting a node
-		node_t insert(T data) {
+		// we assume the key doesnt already exist
+		NodePtr insert(T data) {
 
 			NodePtr node = new node_t;
 			node->parent = NULL;
@@ -507,11 +493,11 @@ class RedBlackTree {
 
 			if (node->parent == NULL) {
 				node->color = 0;
-				return;
+				return node;
 			}
 
 			if (node->parent->parent == NULL) {
-				return;
+				return node;
 			}
 
 			insertFix(node);
@@ -522,8 +508,8 @@ class RedBlackTree {
 			return this->root;
 		}
 
-		void deleteNode(int data) {
-			deleteNodeHelper(this->root, data);
+		void deleteNode( NodePtr node ) {
+			deleteNodeHelper( node );
 		}
 
 		void printTree() {
@@ -542,5 +528,12 @@ class RedBlackTree {
 			if (this->root == TNULL)
 				return NULL;
 			return this->maximum( this->root );
+		}
+
+		//used to swap 2 trees
+		void swapRoot( NodePtr otherRoot ) {
+			NodePtr tmpRoot = otherRoot;
+			this->root = otherRoot;
+			otherRoot = tmpRoot;
 		}
 };

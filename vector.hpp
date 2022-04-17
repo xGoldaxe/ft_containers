@@ -6,7 +6,7 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 16:54:09 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/14 17:24:36 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/17 15:12:29 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,13 +49,6 @@ class ft::vector
 		typedef const ft::random_iterator<value_type, Allocator> const_iterator;
 		typedef ft::reverse_iterator<iterator> reverse_iterator;
 		typedef const ft::reverse_iterator<iterator> const_reverse_iterator;
-
-		/*?*/
-		// typedef value_type iterator;
-		// typedef const iterator const_iterator;
-		// /*?*/
-		// typedef std::reverse_iterator<iterator> reverse_iterator;
-		// typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
 	private:
 		Allocator 	_alctr;

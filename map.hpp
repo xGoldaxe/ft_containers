@@ -6,7 +6,7 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/11 14:27:43 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/16 18:49:43 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/17 16:08:35 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,13 +55,39 @@ class ft::map {
 
 	private:
 			typedef RedBlackTree<value_type>	tree_type;
+			typedef tree_type*					tree_ptr;
+			typedef Node<DataType<value_type> >	node_t;
 
 			Allocator		_alctr;
-			// Compare			_cmpr;
 			size_type		_size;
-			tree_type		_tree;
+			tree_ptr		_tree;
 
 
+		/* ************************************************************************** */
+		/*                                                                            */
+		/*            @utils                                                          */
+		/*                                                                            */
+		/* ************************************************************************** */
+		node_t* _search( value_type pair ) {
+
+			return ( this->_tree->searchTree( pair ) );
+		}
+
+	protected:
+		/* ************************************************************************** */
+		/*                                                                            */
+		/*            @utils                                                          */
+		/*                                                                            */
+		/* ************************************************************************** */
+		tree_ptr getTree() {
+			return (this->_tree);
+		}
+		void setTree( tree_ptr newTree ) {
+			this->_tree = newTree;
+		}
+		void setSize( size_type newSize ) {
+			this->_size = newSize;
+		}
 
 
 	public:
@@ -73,8 +99,9 @@ class ft::map {
 		map() : 
 			_alctr( Allocator() ),
 			_size(0),
-			_tree( tree_type( &compare_template<value_type, Compare> ) )
+			_tree( new tree_type( &compare_template<value_type, Compare> ) )
 		{};
+
 
 		explicit map( const Compare& comp, const Allocator& alloc = Allocator() );
 
@@ -89,7 +116,9 @@ class ft::map {
 		/*            @DESTRUCTOR                                                     */
 		/*                                                                            */
 		/* ************************************************************************** */
-		~map(void) {};
+		~map(void) {
+			delete this->_tree;
+		};
 
 		Allocator get_allocator(void) { 
 			
@@ -105,7 +134,11 @@ class ft::map {
 		T& at( const Key& key ) {
 			
 			value_type pair( key, T() );
-			return ( this->_tree.searchTree( pair ).second );
+			node_t* ptr = this->_search(pair);
+			if (!ptr)
+				throw std::out_of_range("map::at");
+
+			return ( ptr->data.data.second );
 		};
 
 		T& operator[]( const Key& key ) {
@@ -133,24 +166,24 @@ class ft::map {
 
 		iterator begin() {
 
-			Node<DataType<value_type> > *begin = this->_tree.getBegin();
-			return iterator( &this->_tree, begin );
+			Node<DataType<value_type> > *begin = this->_tree->getBegin();
+			return iterator( this->_tree, begin );
 		}
 
 		const_iterator begin() const {
 
-			Node<DataType<value_type> > *begin = this->_tree.getBegin();
-			return const_iterator( &this->_tree, begin );
+			Node<DataType<value_type> > *begin = this->_tree->getBegin();
+			return const_iterator( this->_tree, begin );
 		}
 
 		iterator end() {
 
-			return iterator( &this->_tree, NULL );
+			return iterator( this->_tree, NULL );
 		}
 
 		const_iterator end() const {
 
-			return const_iterator( &this->_tree, NULL );
+			return const_iterator( this->_tree, NULL );
 		}
 
 		reverse_iterator rbegin() {
@@ -211,15 +244,85 @@ class ft::map {
 
 		std::pair<iterator, bool> insert( const value_type& value) {
 
-			Node<DataType<value_type> > it = this->_tree.insert(value);
+			node_t* ptr = this->_search(value);
+
+			if (ptr != NULL) {
+				return ( std::make_pair( iterator( this->_tree, ptr ), false ) );
+			}
+			//else
+			node_t* it = this->_tree->insert(value);
 			this->_size++;
-			return ( std::make_pair( iterator( &this->_tree, it ), true ) );
+			return ( std::make_pair( iterator( this->_tree, it ), true ) );
 		};
 
-		iterator insert( iterator hint, const value_type& value );
+		iterator insert( iterator hint, const value_type& value ) {
+
+			node_t* ptr = this->_search(value);
+			(void)hint;
+			if (ptr != NULL)
+				return iterator( this->_tree, ptr );
+
+			node_t* it = this->_tree.insert(value);
+			this->_size++;
+			return iterator( this->_tree, it );
+		};
 
 		template < class IntputIt >
-		void insert( IntputIt first, IntputIt last );
+		void insert( IntputIt first, IntputIt last ) {
+
+			for (; first != last; ++first) {
+
+				insert(*first);
+			}
+		};
+
+		/*************************
+		* @erase
+		* ***********************/
+		void erase( iterator pos ) {
+
+			this->_tree.deleteNode( pos.getActual() );
+			this->_size--;
+		};
+
+		void erase( iterator first, iterator last) {
+			
+			iterator next;
+
+			while (first != last) {
+
+				next = first;
+				++next;
+				this->erase( first );
+				first = next;
+			}
+		};
+
+		size_type erase( const Key& key ) {
+
+			value_type pair( key, T() );
+			node_t* ptr = this->_search(pair);
+			if (ptr == NULL)
+				return ( static_cast<size_type>(0) );
+				
+			this->_tree.deleteNode( ptr );
+			this->_size--;
+			return ( static_cast<size_type>(1) );
+		};
+
+		/*************************
+		* @swap
+		* ***********************/
+		void swap( map& other ) {
+			tree_ptr tmpTree = this->_tree;
+			this->_tree = other.getTree();
+			other.setTree( tmpTree );
+
+			size_type tmpSize = this->size();
+			this->_size = other.size();
+			other.setSize( tmpSize );
+			// this->_tree.swapRoot( other.getTree()->getRoot() );
+		};
 };
 
 
