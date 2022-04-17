@@ -59,5 +59,12 @@ int main( void ) {
 		//will never fire
 		std::cout << (*itb).first << ":" << itb->second << std::endl;
 	}
+
+
+	// std::cout << "<-----------{const ite}----------->" << std::endl;
+	// std::map<std::string, int>::const_iterator bit = bst.cbegin();
+	// ++bit;
+	// std::cout << bit->first << ":" << bit->second << std::endl;
+
     return (0);
 }

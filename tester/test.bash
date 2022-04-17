@@ -14,6 +14,8 @@ PATH="../container.a"
 CPP="/usr/bin/c++"
 
 TESTPATH="../tests/"
+BASEPATH=$TESTPATH
+FOLDER_PATH=""
 
 PASS=0
 NB_TEST=0
@@ -27,14 +29,31 @@ re_flag=0
 debug_flag=0
 argv=""
 
+#modular routers
+modular_no() {
+
+    if [ "$1" == "valgrind" ] ; then
+        valgrind=""
+    else
+        #base case
+        echo "#FLAG --no:" "\"$1\"" "is not valid!"
+    fi
+}
+
+#arg router
 for var in "$@"
 do
-    if [ "$var" == "--no=valgrind" ] ; then
-        valgrind=""
-    elif [ "$var" == "--re" ] ; then
+    arrModular=(${var//=/ })
+
+    if [ "$var" == "--re" ] ; then
         re_flag=1
     elif [ "$var" == "--debug" ] ; then
         debug_flag=1
+    elif [ "${arrModular[0]}" == "--no" ] ; then
+        modular_no "${arrModular[1]}"
+    elif [ "${arrModular[0]}" == "--folder" ] ; then
+        TESTPATH+=${arrModular[1]}
+        FOLDER_PATH="${arrModular[1]}/"
     else
         argv=$var
     fi
@@ -62,7 +81,7 @@ do_test() {
     NAME="${TEST%.test*}"
 
     # for each test
-    MAINPATH="${TESTPATH}${TEST}.cpp"
+    MAINPATH="${BASEPATH}${TEST}.cpp"
     EXECPATH="./execs/${TEST}"
     OUTFILEPATH="outfile/${NAME}.out"
 
@@ -160,18 +179,19 @@ do_test() {
 
 #launch one test
 if [ "$argv" != "" ]; then
-    if [ ! -f "${TESTPATH}${argv}.test.cpp" ] ; then
-        echo "This test doesn't exist!"
+    MAINPATH="${TESTPATH}${argv}"
+    if [ ! -f "${MAINPATH}.test.cpp" ] ; then
+        echo "This test doesn't exist!: $argv"
         exit 0
     fi
     if [ $re_flag -eq 1 ] ; then
-        $rm "tests_ft/${argv}.test_ft.cpp" "execs/${argv}.test_ft" "execs/${argv}.test"
+        $rm "tests_ft/${FOLDER_PATH}${argv}.test_ft.cpp" "execs/${FOLDER_PATH}${argv}.test_ft" "execs/${FOLDER_PATH}${argv}.test"
     fi
     if [ $debug_flag -eq 1 ] ; then
-        $rm -r tests_ft/${argv}.test_ft.cpp execs/${argv}.test execs/${argv}.test_ft
-        do_test "${argv}.test.cpp" "--debug"
+        $rm -r tests_ft/${FOLDER_PATH}${argv}.test_ft.cpp execs/${FOLDER_PATH}${argv}.test execs/${FOLDER_PATH}${argv}.test_ft
+        do_test "${MAINPATH}.test.cpp" "--debug"
     else
-        do_test "${argv}.test.cpp"
+        do_test "${MAINPATH}.test.cpp"
     fi
     exit 0
 fi

@@ -26,14 +26,6 @@ int main( void ) {
 		std::cout << it->first << ":" << it->second << std::endl;
 	}
 
-	std::cout << "<-----------{erase all}----------->" << std::endl;
-	it = b.begin();
-	for (; it != b.end(); ++it ) {
-
-		b.erase( it );
-	}
-	std::cout << "size: " << b.size() << std::endl;
-
 	//double free 
 	// std::cout << "<-----------{doesnt exist case}----------->" << std::endl;
 	// b.erase( itb );

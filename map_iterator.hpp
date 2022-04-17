@@ -162,7 +162,7 @@ class ft::map_iterator : public std::iterator
 		* the end value, but still
 		* remain a undefined behavior
 		* ***********************/
-		reference& operator*(void) {
+		reference& operator*(void) const {
 
 			if (this->_actual == NULL)
 				return this->_tree->getRoot()->data.data;
@@ -171,7 +171,7 @@ class ft::map_iterator : public std::iterator
 		/*************************
 		* @i->m equivalent (*i).m
 		* ***********************/
-		value_type *operator->() {
+		value_type *operator->() const {
 
 			if (this->_actual == NULL)
 				return &this->_tree->getRoot()->data.data;

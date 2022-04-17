@@ -35,5 +35,6 @@ int main( void ) {
 
 		std::cout << (*rite).first << ":" << rite->second << std::endl;
 	}
+	
     return (0);
 }

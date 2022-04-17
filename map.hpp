@@ -6,7 +6,7 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/11 14:27:43 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/17 16:08:35 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/17 18:15:51 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,11 +68,14 @@ class ft::map {
 		/*            @utils                                                          */
 		/*                                                                            */
 		/* ************************************************************************** */
-		node_t* _search( value_type pair ) {
+		node_t* _search( value_type pair ) const {
 
 			return ( this->_tree->searchTree( pair ) );
 		}
-
+		node_t* _search_pair( const Key &key ) const {
+			value_type pair( key, T() );
+			return this->_search( pair );
+		}
 	protected:
 		/* ************************************************************************** */
 		/*                                                                            */
@@ -109,7 +112,7 @@ class ft::map {
 		map( InputIt first, InputIt last,
 				const Compare& comp = Compare(), const Allocator& alloc = Allocator() );
 
-		map( const map&other );
+		map( const map &other );
 
 		/* ************************************************************************** */
 		/*                                                                            */
@@ -133,8 +136,7 @@ class ft::map {
 
 		T& at( const Key& key ) {
 			
-			value_type pair( key, T() );
-			node_t* ptr = this->_search(pair);
+			node_t* ptr = _search_pair( key );
 			if (!ptr)
 				throw std::out_of_range("map::at");
 
@@ -234,7 +236,7 @@ class ft::map {
 		/* ************************************************************************** */
 		void clear() {
 
-			this->_tree.cleanTree();
+			this->_tree->cleanTree();
 			this->_size = 0;
 		};
 
@@ -262,7 +264,7 @@ class ft::map {
 			if (ptr != NULL)
 				return iterator( this->_tree, ptr );
 
-			node_t* it = this->_tree.insert(value);
+			node_t* it = this->_tree->insert(value);
 			this->_size++;
 			return iterator( this->_tree, it );
 		};
@@ -281,7 +283,7 @@ class ft::map {
 		* ***********************/
 		void erase( iterator pos ) {
 
-			this->_tree.deleteNode( pos.getActual() );
+			this->_tree->deleteNode( pos.getActual() );
 			this->_size--;
 		};
 
@@ -300,12 +302,11 @@ class ft::map {
 
 		size_type erase( const Key& key ) {
 
-			value_type pair( key, T() );
-			node_t* ptr = this->_search(pair);
+			node_t* ptr = _search_pair( key );
 			if (ptr == NULL)
 				return ( static_cast<size_type>(0) );
 				
-			this->_tree.deleteNode( ptr );
+			this->_tree->deleteNode( ptr );
 			this->_size--;
 			return ( static_cast<size_type>(1) );
 		};
@@ -321,8 +322,83 @@ class ft::map {
 			size_type tmpSize = this->size();
 			this->_size = other.size();
 			other.setSize( tmpSize );
-			// this->_tree.swapRoot( other.getTree()->getRoot() );
 		};
+
+		/* ************************************************************************** */
+		/*                                                                            */
+		/*            @lookup                                                         */
+		/*                                                                            */
+		/* ************************************************************************** */
+		size_type count( const Key& key ) const {
+
+			if ( this->_search_pair( key ) == NULL )
+				return static_cast<size_type>(0);
+			return static_cast<size_type>(1);
+		};
+
+		iterator find( const Key& key ) {
+
+			node_t* ptr = _search_pair( key );
+			if (ptr == NULL)
+				return ( this->end() );
+
+			return ( iterator( this->_tree, ptr ) );
+		};
+
+		const_iterator find( const Key& key ) const {
+
+			node_t* ptr = _search_pair( key );
+			if (ptr == NULL)
+				return ( this->end() );
+
+			return ( const_iterator( this->_tree, ptr ) );
+		};
+
+		/*************************
+		* @equal range
+		* ***********************/
+		std::pair<iterator, iterator> equal_range( const Key& key ) {
+
+			iterator first = lower_bound(key);
+			iterator last = upper_bound(key);
+			return std::pair<iterator, iterator>(first, last);
+		};
+	
+		/*************************
+		* @lower bound
+		* ***********************/
+		iterator lower_bound( const Key& key ) {
+
+			for (iterator it = this->begin(); it != this->end(); ++it) {
+				
+				if ( !Compare()( it->first, key ) )
+					return (it);
+			}
+			return ( this->end() );
+		}
+
+		/*************************
+		* @upper bound
+		* ***********************/
+		iterator upper_bound( const Key& key ) {
+
+			for (iterator it = this->begin(); it != this->end(); ++it) {
+				
+				if ( Compare()( key, it->first ) )
+					return (it);
+			}
+			return ( this->end() );
+		}
+
+		/* ************************************************************************** */
+		/*                                                                            */
+		/*            @observers                                                      */
+		/*                                                                            */
+		/* ************************************************************************** */
+		key_compare key_comp() const {
+
+			return ( key_compare() );
+		}
 };
 
 
