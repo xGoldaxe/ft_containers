@@ -6,14 +6,12 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/11 14:27:43 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/17 18:15:51 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/17 19:25:25 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MAP_HPP
 #	define MAP_HPP
-
-#include "ft.hpp"
 
 template < class value_type, class compare >
 bool	compare_template( value_type a, value_type b ) {
@@ -58,6 +56,7 @@ class ft::map {
 			typedef tree_type*					tree_ptr;
 			typedef Node<DataType<value_type> >	node_t;
 
+			key_compare		_cmpr;
 			Allocator		_alctr;
 			size_type		_size;
 			tree_ptr		_tree;
@@ -100,6 +99,7 @@ class ft::map {
 		/*                                                                            */
 		/* ************************************************************************** */
 		map() : 
+			_cmpr( Compare() ),
 			_alctr( Allocator() ),
 			_size(0),
 			_tree( new tree_type( &compare_template<value_type, Compare> ) )
@@ -395,9 +395,32 @@ class ft::map {
 		/*            @observers                                                      */
 		/*                                                                            */
 		/* ************************************************************************** */
-		key_compare key_comp() const {
+		key_compare key_comp(void) const {
 
 			return ( key_compare() );
+		}
+
+		class value_compare {
+			protected:
+				Compare comp;
+
+			public:
+				typedef bool 			result_type;
+				typedef value_type		first_argument_type;
+				typedef value_type		second_argument_type;
+
+				value_compare(Compare c) : comp(c) {};
+				virtual ~value_compare(void) {};
+
+				bool operator() ( const value_type& lhs, const value_type& rhs ) const {
+
+					return comp(lhs.first, rhs.first);
+				}
+		};
+
+		value_compare value_comp(void) const {
+
+			return ( value_compare( this->_cmpr ) );
 		}
 };
 

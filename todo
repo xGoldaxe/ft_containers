@@ -1,3 +1,11 @@
 pair<CONST key, T> to check fix or not
 
+map constructors
+
+map const iterator
+
+map comparaison
+
+map swap overload
+
 replace.sh rule for tester
