@@ -52,7 +52,6 @@ class ft::const_map_iterator : public ft::map_iterator<T, Tree>
 		/* ************************************************************************** */
 		const_reference operator*() const {
 
-			std::cout << "called" << std::endl;
 			return ( iterator_noconst::operator*() );
 		};
 		/*************************

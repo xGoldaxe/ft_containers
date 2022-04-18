@@ -6,7 +6,7 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/11 14:27:43 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/18 15:31:50 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/18 18:11:24 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ class ft::map {
 		/* ************************************************************************** */
 		typedef Key 								key_type;
 		typedef T									mapped_type;
-		// typedef std::pair<Key, T> 					value_type;
 		typedef std::pair<const Key, T> 			value_type;
 		typedef std::size_t 						size_type;
 		typedef std::ptrdiff_t 						difference_type;
@@ -75,13 +74,33 @@ class ft::map {
 			value_type pair( key, T() );
 			return this->_search( pair );
 		}
+		
+		typedef typename Allocator::template rebind<tree_type>::other	tree_allocator_t;
+		tree_ptr _construct_tree() {
+		
+			// tree_type			tree_value( &compare_template<value_type, Compare> );
+			// tree_allocator_t	tree_allocator;
+			// tree_ptr tree = tree_allocator.allocate(1);
+			// tree_allocator.construct(tree, tree_value);
+			// return tree;
+			return new tree_type( &compare_template<value_type, Compare> );
+		}
+		void	_delete_tree(tree_ptr tree) {
+			
+			// tree_allocator_t	tree_allocator;
+			// tree_allocator.destroy(tree);
+			// tree_allocator.deallocate(tree, 1);
+			// tree = NULL;
+			delete tree;
+			tree = NULL;
+		}
 	protected:
 		/* ************************************************************************** */
 		/*                                                                            */
 		/*            @utils                                                          */
 		/*                                                                            */
 		/* ************************************************************************** */
-		tree_ptr getTree() {
+		tree_ptr getTree() const {
 			return (this->_tree);
 		}
 		void setTree( tree_ptr newTree ) {
@@ -91,6 +110,9 @@ class ft::map {
 			this->_size = newSize;
 		}
 
+		key_compare _get_compare(void) const {
+			return (this->_cmpr);
+		}
 
 	public:
 		/* ************************************************************************** */
@@ -102,28 +124,59 @@ class ft::map {
 			_cmpr( Compare() ),
 			_alctr( Allocator() ),
 			_size(0),
-			_tree( new tree_type( &compare_template<value_type, Compare> ) )
+			_tree( this->_construct_tree() )
 		{};
 
-
-		explicit map( const Compare& comp, const Allocator& alloc = Allocator() );
+		explicit map( const Compare& comp, const Allocator& alloc = Allocator() ) :
+			_cmpr( comp ),
+			_alctr( alloc ),
+			_size(0),
+			_tree( this->_construct_tree() )
+		{};
 
 		template< class InputIt >
-		map( InputIt first, InputIt last,
-				const Compare& comp = Compare(), const Allocator& alloc = Allocator() );
+		map( 	InputIt first, InputIt last,
+				const Compare& comp = Compare(),
+				const Allocator& alloc = Allocator() ) :
+			_cmpr( comp ),
+			_alctr( alloc ),
+			_size( 0 ),
+			_tree( this->_construct_tree() )
+		{
+			/* insert from first to last */
+			this->insert( first, last );
+		};
 
-		map( const map &other );
+		map( const map &other ) :
+			_cmpr( other._get_compare() ),
+			_alctr( other.get_allocator() ),
+			_size( 0 ), //will be updated at insert
+			_tree( this->_construct_tree() )
+		{
+			/* we must copy the tree */
+			this->insert( other.begin(), other.end() );
+		};
 
+		map& operator=( const map& other ) {
+
+			// if (*this == other)
+			// 	return (*this);
+			this->_delete_tree( this->_tree );
+			this->_tree = this->_construct_tree();
+			this->_size = 0;
+			this->insert( other.begin(), other.end() );
+			return *this;
+		}
 		/* ************************************************************************** */
 		/*                                                                            */
 		/*            @DESTRUCTOR                                                     */
 		/*                                                                            */
 		/* ************************************************************************** */
 		~map(void) {
-			delete this->_tree;
+			this->_delete_tree( this->_tree );
 		};
 
-		Allocator get_allocator(void) { 
+		Allocator get_allocator(void) const { 
 			
 			return this->_alctr; 
 		};
@@ -140,7 +193,7 @@ class ft::map {
 			if (!ptr)
 				throw std::out_of_range("map::at");
 
-			return ( ptr->data.data->second );
+			return ( ptr->data.data.second );
 		};
 
 		T& operator[]( const Key& key ) {

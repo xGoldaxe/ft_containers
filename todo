@@ -1,8 +1,6 @@
-map allocator
-
-map constructors
-
 map comparaison
+
+tree allocator (fix)
 
 map swap overload
 
@@ -19,3 +17,11 @@ equal
 std::pair
 
 replace.sh rule for tester
+
+===================
+
+set
+
+===================
+
+stack

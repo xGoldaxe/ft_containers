@@ -166,8 +166,8 @@ class ft::map_iterator : public std::iterator
 		reference operator*(void) const {
 
 			if (this->_actual == NULL)
-				return *this->_tree->getRoot()->data.data;
-			return ( *this->_actual->data.data );
+				return this->_tree->getRoot()->data.data;
+			return ( this->_actual->data.data );
 		};
 		/*************************
 		* @i->m equivalent (*i).m
@@ -175,8 +175,8 @@ class ft::map_iterator : public std::iterator
 		value_type *operator->() const {
 
 			if (this->_actual == NULL)
-				return this->_tree->getRoot()->data.data;
-			return ( this->_actual->data.data );
+				return &this->_tree->getRoot()->data.data;
+			return ( &this->_actual->data.data );
 		};
 		map_iterator& operator++(void) {
 

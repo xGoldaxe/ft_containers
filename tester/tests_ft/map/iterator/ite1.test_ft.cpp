@@ -35,6 +35,7 @@ int main( void ) {
 	std::cout << (it == it2) << std::endl;
 
 	std::cout << "<-----------{normal case}----------->" << std::endl;
+	it->second = 666;
     for (; it != bst.end(); ++it) {
 
 		std::cout << (*it).first << ":" << it->second << std::endl;
