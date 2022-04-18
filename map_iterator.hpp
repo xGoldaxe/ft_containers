@@ -13,7 +13,8 @@
 #include "ft.hpp"
 
 template <
-	typename T
+	typename T,
+	typename Tree
 >
 
 class ft::map_iterator : public std::iterator
@@ -39,7 +40,7 @@ class ft::map_iterator : public std::iterator
 		typedef T&									reference;
 	
 	private:		
-		typedef const RedBlackTree<T>*				tree_ptr;
+		typedef Tree*								tree_ptr;
 		typedef Node<DataType<T> >					node_t;
 		
 		tree_ptr			_tree;
@@ -162,11 +163,11 @@ class ft::map_iterator : public std::iterator
 		* the end value, but still
 		* remain a undefined behavior
 		* ***********************/
-		reference& operator*(void) const {
+		reference operator*(void) const {
 
 			if (this->_actual == NULL)
-				return this->_tree->getRoot()->data.data;
-			return ( this->_actual->data.data );
+				return *this->_tree->getRoot()->data.data;
+			return ( *this->_actual->data.data );
 		};
 		/*************************
 		* @i->m equivalent (*i).m
@@ -174,8 +175,8 @@ class ft::map_iterator : public std::iterator
 		value_type *operator->() const {
 
 			if (this->_actual == NULL)
-				return &this->_tree->getRoot()->data.data;
-			return ( &this->_actual->data.data );
+				return this->_tree->getRoot()->data.data;
+			return ( this->_actual->data.data );
 		};
 		map_iterator& operator++(void) {
 

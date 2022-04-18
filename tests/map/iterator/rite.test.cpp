@@ -35,6 +35,11 @@ int main( void ) {
 
 		std::cout << (*rite).first << ":" << rite->second << std::endl;
 	}
+
+	std::cout << "<-----------{const ite}----------->" << std::endl;
+	std::map<std::string, int>::const_iterator r = bst.end();
+	std::reverse_iterator<std::map<std::string, int>::const_iterator> rr(r);
+	std::cout << rr->first << ":" << rr->second << std::endl;
 	
     return (0);
 }

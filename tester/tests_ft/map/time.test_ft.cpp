@@ -6,6 +6,7 @@
 
 int main( void ) {
 
+    return 0;
     typedef std::pair<int, std::string> pair_type;
 
     ft::map<int, std::string> bst;

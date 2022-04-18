@@ -1,11 +1,21 @@
-pair<CONST key, T> to check fix or not
+map allocator
 
 map constructors
-
-map const iterator
 
 map comparaison
 
 map swap overload
+
+===================
+
+iterator_traits
+
+enable_if
+
+is_integral
+
+equal
+
+std::pair
 
 replace.sh rule for tester

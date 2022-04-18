@@ -6,7 +6,7 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/14 15:40:37 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/17 19:25:45 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/18 16:17:00 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,26 +16,29 @@ template < class T >
 class DataType {
 	private:
 
+		
 	public:
-		T 	data;
+		T 	*data;
 		bool (*_compare)( T a, T b );
 
 		DataType() : 
-			data( T() ), 
+			data( NULL ), 
 			_compare(NULL)
 		{};
-		
+
 		DataType( const DataType& rhs ) : 
 			data( rhs.data ),
 			_compare( rhs._compare )
 		{};
 
-		DataType( T data, bool (*compare)( T a, T b ) ) : 
-			data( data ),
+		DataType( const T &data, bool (*compare)( T a, T b ) ) : 
+			data( new T( data ) ),
 			_compare( compare )
 		{};
 		
-		~DataType() {};
+		~DataType() {
+			delete data;
+		};
 		DataType &operator=( const DataType& rhs ) {
 			this->data = rhs.data;
 			return *this;
@@ -52,12 +55,12 @@ class DataType {
 	
 		bool operator<( const DataType& b ) { 
 
-			return !_compare(this->data, b.data); 
+			return !_compare(*this->data, *b.data); 
 		}
 		
 		bool operator>( const DataType& b ) {
 			
-			return !_compare(b.data, this->data);
+			return !_compare(*b.data, *this->data);
 		}
 
 		bool operator==( const DataType& b ) { 
@@ -95,16 +98,21 @@ class Node {
 		}
 };
 
-template < class T >
+template < class T, class Allocator >
 class RedBlackTree {
 	private:
-		typedef DataType<T> data_t;
-		typedef Node<data_t> node_t; 
-		typedef node_t *NodePtr;
-		NodePtr root;
-		NodePtr TNULL;
+		typedef DataType<T>		data_t;
+		typedef Node<data_t>	node_t; 
+		typedef node_t			*NodePtr;
 
-		bool (*_compare)( T a, T b );
+		Allocator				_alctr;
+		bool 					(*_compare)( T a, T b );
+		NodePtr 				root;
+		NodePtr 				TNULL;
+
+		/*************************
+		* @utils
+		* ***********************/
 
 		void initializeNULLNode(NodePtr node, NodePtr parent) {
 			node->data = NULL;
@@ -115,7 +123,6 @@ class RedBlackTree {
 			// node->_compare = this->_compare;
 		}
 
-		// Preorder
 		void preOrderHelper(NodePtr node) {
 			if (node != TNULL) {
 				std::cout << node->data << " ";
@@ -124,7 +131,6 @@ class RedBlackTree {
 			}
 		}
 
-		// Inorder
 		void inOrderHelper(NodePtr node) {
 			if (node != TNULL) {
 				inOrderHelper(node->left);
@@ -338,8 +344,9 @@ class RedBlackTree {
 		RedBlackTree( bool (*compare)( T a, T b ) ) {
 			
 			this->_compare = compare;
+			this->_alctr = Allocator();
 
-			TNULL = new node_t;
+			TNULL = new node_t();
 			TNULL->color = 0;
 			TNULL->left = NULL;
 			TNULL->right = NULL;
@@ -360,7 +367,7 @@ class RedBlackTree {
 		}
 
 		//return null in case key doesnt exist
-		NodePtr searchTree( const T &k ) {
+		NodePtr searchTree( const T& k ) {
 			data_t data_key(k, this->_compare);
 			NodePtr ptr = searchTreeHelper(this->root, data_key);
 			if ( ptr == TNULL )
@@ -460,16 +467,17 @@ class RedBlackTree {
 		NodePtr insert(T data) {
 
 			NodePtr node = new node_t;
+
+
 			node->parent = NULL;
 
-			node->data.data = data;
+			node->data.data = new T( data );
 			node->data._compare = this->_compare;
 			
 			node->left = TNULL;
 			node->right = TNULL;
 			node->color = 1;
 			
-
 			NodePtr y = NULL;
 			NodePtr x = this->root;
 

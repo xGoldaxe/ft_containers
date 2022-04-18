@@ -61,10 +61,24 @@ int main( void ) {
 	}
 
 
-	// std::cout << "<-----------{const ite}----------->" << std::endl;
-	// std::map<std::string, int>::const_iterator bit = bst.cbegin();
-	// ++bit;
-	// std::cout << bit->first << ":" << bit->second << std::endl;
+	std::cout << "<-----------{const ite}----------->" << std::endl;
+	const std::map<std::string, int>::iterator bbit = bst.begin();
+	std::map<std::string, int>::const_iterator bit = bbit;
+	std::map<std::string, int>::const_iterator cbit = bit;
+	std::map<std::string, int>::const_iterator abit;
+	abit = cbit;
+	std::cout << bit->first << ":" << bit->second << std::endl;
+	std::cout << cbit->first << ":" << cbit->second << std::endl;
+	std::cout << abit->first << ":" << abit->second << std::endl;
+
+	std::cout << "<-----------{cbegin}----------->" << std::endl;
+	const std::map<std::string, int>::const_iterator cbeg = bst.begin();
+	std::cout << cbeg->first << ":" << cbeg->second << std::endl;
+
+
+	// std::cout << "<-----------{impossible}----------->" << std::endl;
+	// bit->second = 666;
+	// (*abit).second = 666;
 
     return (0);
 }

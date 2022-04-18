@@ -6,7 +6,7 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/11 14:27:43 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/17 19:25:25 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/18 15:31:50 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,8 @@ class ft::map {
 		/* ************************************************************************** */
 		typedef Key 								key_type;
 		typedef T									mapped_type;
-		typedef std::pair<Key, T> 					value_type;
-		// typedef std::pair<const Key, T> 			value_type;
+		// typedef std::pair<Key, T> 					value_type;
+		typedef std::pair<const Key, T> 			value_type;
 		typedef std::size_t 						size_type;
 		typedef std::ptrdiff_t 						difference_type;
 		typedef Compare								key_compare;
@@ -52,9 +52,9 @@ class ft::map {
 
 
 	private:
-			typedef RedBlackTree<value_type>	tree_type;
-			typedef tree_type*					tree_ptr;
-			typedef Node<DataType<value_type> >	node_t;
+			typedef RedBlackTree<value_type, Allocator>		tree_type;
+			typedef tree_type*								tree_ptr;
+			typedef Node<DataType<value_type> >				node_t;
 
 			key_compare		_cmpr;
 			Allocator		_alctr;
@@ -140,7 +140,7 @@ class ft::map {
 			if (!ptr)
 				throw std::out_of_range("map::at");
 
-			return ( ptr->data.data.second );
+			return ( ptr->data.data->second );
 		};
 
 		T& operator[]( const Key& key ) {
@@ -161,21 +161,21 @@ class ft::map {
 		/*            @ITERATORS                                                      */
 		/*                                                                            */
 		/* ************************************************************************** */
-		typedef ft::map_iterator<value_type>			iterator;
-		typedef const ft::map_iterator<value_type>		const_iterator;
+		typedef ft::map_iterator<value_type, tree_type>			iterator;
+		typedef ft::const_map_iterator<value_type, tree_type>		const_iterator;
 		typedef ft::reverse_iterator<iterator>			reverse_iterator;
 		typedef ft::reverse_iterator<const_iterator>	const_reverse_iterator;
 
-		iterator begin() {
+		iterator begin(void) {
 
 			Node<DataType<value_type> > *begin = this->_tree->getBegin();
 			return iterator( this->_tree, begin );
 		}
 
-		const_iterator begin() const {
+		const_iterator begin(void) const {
 
 			Node<DataType<value_type> > *begin = this->_tree->getBegin();
-			return const_iterator( this->_tree, begin );
+			return const_iterator( iterator(this->_tree, begin) );
 		}
 
 		iterator end() {
@@ -185,7 +185,7 @@ class ft::map {
 
 		const_iterator end() const {
 
-			return const_iterator( this->_tree, NULL );
+			return const_iterator( iterator( this->_tree, NULL ) );
 		}
 
 		reverse_iterator rbegin() {
@@ -226,7 +226,7 @@ class ft::map {
 
 		size_type max_size() const {
 
-			return (std::numeric_limits<difference_type>::max() / sizeof(Node<DataType<value_type> >) );
+			return (std::numeric_limits<difference_type>::max() / sizeof(value_type) + sizeof(Node<DataType<value_type> >) );
 		}
 
 		/* ************************************************************************** */
@@ -351,23 +351,37 @@ class ft::map {
 			if (ptr == NULL)
 				return ( this->end() );
 
-			return ( const_iterator( this->_tree, ptr ) );
+			return ( const_iterator( iterator( this->_tree, ptr ) ) );
 		};
 
 		/*************************
 		* @equal range
 		* ***********************/
+	private:
+		template < class Ite >
+		std::pair<Ite, Ite> _equal_range( const Key& key ) const {
+
+			Ite first = lower_bound(key);
+			Ite last = upper_bound(key);
+			return std::pair<Ite, Ite>(first, last);
+		};
+
+	public:
 		std::pair<iterator, iterator> equal_range( const Key& key ) {
 
-			iterator first = lower_bound(key);
-			iterator last = upper_bound(key);
-			return std::pair<iterator, iterator>(first, last);
+			return _equal_range<iterator>(key);
 		};
+
+		std::pair<const_iterator, const_iterator> equal_range( const Key& key ) const {
+
+			return _equal_range<const_iterator>(key);
+		}
 	
 		/*************************
 		* @lower bound
 		* ***********************/
-		iterator lower_bound( const Key& key ) {
+	private:
+		iterator _lower_bound( const Key& key ) const {
 
 			for (iterator it = this->begin(); it != this->end(); ++it) {
 				
@@ -376,11 +390,21 @@ class ft::map {
 			}
 			return ( this->end() );
 		}
+	public:
+		iterator lower_bound( const Key& key ) {
+
+			return _lower_bound( key );
+		}
+		const_iterator lower_bound( const Key& key ) const {
+
+			return const_iterator( _lower_bound( key ) );
+		}
 
 		/*************************
 		* @upper bound
 		* ***********************/
-		iterator upper_bound( const Key& key ) {
+	private:
+		iterator _upper_bound( const Key& key ) const {
 
 			for (iterator it = this->begin(); it != this->end(); ++it) {
 				
@@ -388,6 +412,15 @@ class ft::map {
 					return (it);
 			}
 			return ( this->end() );
+		}
+	public:
+		iterator upper_bound( const Key& key ) {
+
+			return _upper_bound( key );
+		}
+		const_iterator upper_bound( const Key& key ) const {
+
+			return const_iterator( _upper_bound( key ) );
 		}
 
 		/* ************************************************************************** */
@@ -400,16 +433,20 @@ class ft::map {
 			return ( key_compare() );
 		}
 
+		friend class value_compare;
+
 		class value_compare {
+			friend class map<key_type, mapped_type, key_compare, Allocator>;
+
 			protected:
 				Compare comp;
+				value_compare(Compare c) : comp(c) {};
 
 			public:
 				typedef bool 			result_type;
 				typedef value_type		first_argument_type;
 				typedef value_type		second_argument_type;
 
-				value_compare(Compare c) : comp(c) {};
 				virtual ~value_compare(void) {};
 
 				bool operator() ( const value_type& lhs, const value_type& rhs ) const {
