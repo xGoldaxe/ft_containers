@@ -6,7 +6,7 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 17:09:42 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/18 15:08:20 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/20 17:51:41 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,15 @@ namespace ft {
 
     template < class Iter >
     class iterator_traits;
+
+    /*************************
+    * @enable if
+    * ***********************/
+    template< bool B, class T >
+    struct enable_if;
+
+    template<class T>
+    struct ft::enable_if<true, T>;
 
     /* ************************************************************************** */
     /*                                                                            */

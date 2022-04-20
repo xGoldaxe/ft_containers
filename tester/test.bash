@@ -7,8 +7,8 @@ wc="/usr/bin/wc"
 make="/usr/bin/make"
 valgrind="/usr/bin/valgrind"
 
-
-CPPFLAGS="-Wall -Wextra -Werror -I. -std=c++98"
+COMPILFLAG="-std=c++98"
+CPPFLAGS="-Wall -Wextra -Werror -I."
 LIBNAME="container.a"
 PATH="../container.a"
 CPP="/usr/bin/c++"
@@ -54,6 +54,8 @@ do
     elif [ "${arrModular[0]}" == "--folder" ] ; then
         TESTPATH+=${arrModular[1]}
         FOLDER_PATH="${arrModular[1]}/"
+    elif [ "${arrModular[0]}" == "--COMPILFLAG" ] ; then
+        COMPILFLAG=${arrModular[1]}
     else
         argv=$var
     fi
@@ -85,17 +87,23 @@ do_test() {
     EXECPATH="./execs/${TEST}"
     OUTFILEPATH="outfile/${NAME}.out"
 
-    declare -i i=0
+    #execution flags ===========================================
+    exec_flags $MAINPATH
+    #execution flags ===========================================
+
+
+    # declare -i i=0
     # while [ ! -f "$EXECPATH" ] ; do
-    #     $CPP $CPPFLAGS $PATH $MAINPATH -o $EXECPATH
+    #     $CPP $CPPFLAGS $COMPILFLAG $PATH $MAINPATH -o $EXECPATH
     #     i=$(( i + 1 ))
     #     if [ $i -gt 5 ] ;then
     #         echo "Can't compile, now exiting ..."
     #         exit 1
     #     fi
     # done
+
     if [ ! -f "$EXECPATH" ] ; then
-        $CPP $CPPFLAGS $PATH $MAINPATH -o $EXECPATH
+        $CPP $CPPFLAGS $E_COMPILFLAG $PATH $MAINPATH -o $EXECPATH
     fi
     if [ "${2}" == "--debug" ]; then
         $valgrind $EXECPATH
@@ -113,9 +121,9 @@ do_test() {
         /bin/touch $FTMAINPATH
         echo "#include \"../ft.hpp\"" >> $FTMAINPATH
         /bin/cat $MAINPATH >> $FTMAINPATH
-        /usr/bin/sed -i -- 's/std::vector/ft::vector/g' $FTMAINPATH
-        /usr/bin/sed -i -- 's/std::reverse_iterator/ft::reverse_iterator/g' $FTMAINPATH
-        /usr/bin/sed -i -- 's/std::map/ft::map/g' $FTMAINPATH
+        #replace
+        find_up "$(/usr/bin/dirname "$MAINPATH")" "replace.sh"
+        /usr/bin/bash $REPLACE_PATH $FTMAINPATH
     fi
     # replace
 
@@ -123,26 +131,32 @@ do_test() {
     OUTFILEPATHFT="outfile/${NAME}_ft.out"
     i=$(( 0 ))
     # while [ ! -f "$EXECPATH" ] ; do
-    #     $CPP $CPPFLAGS $PATH $MAINPATH -o $EXECPATH
+    #     $CPP $CPPFLAGS $COMPILFLAG $PATH $MAINPATH -o $EXECPATH
     #     i=$(( i + 1 ))
     #     if [ $i -gt 5 ] ;then
     #         echo "Can't compile, now exiting."
     #         exit 1
     #     fi
     # done
+     #execution flags ===========================================
+    exec_flags $FTMAINPATH
+    #execution flags ===========================================
+
     if [ ! -f "$EXECPATH" ] ; then
-        $CPP $CPPFLAGS $PATH $FTMAINPATH -o $EXECPATH
+        $CPP $CPPFLAGS $E_COMPILFLAG $PATH $FTMAINPATH -o $EXECPATH
     fi
     if [ "${2}" == "--debug" ]; then
         $valgrind $EXECPATH
-        exit 0
     else
         $valgrind $EXECPATH > $OUTFILEPATHFT 2> outfile/.errors
     fi
 
     DIFFPATH="diff/${NAME}.diff"
-    $diff $OUTFILEPATH $OUTFILEPATHFT > $DIFFPATH
+    if [ $debug_flag -ne 0 ]; then
+        return
+    fi
 
+    $diff $OUTFILEPATH $OUTFILEPATHFT > $DIFFPATH
     CONDITION=$($wc -l < $DIFFPATH)
 
     if [ $CONDITION -eq 0 ]
@@ -177,6 +191,41 @@ do_test() {
     # for each
 }
 
+find_up () {
+    path=$1
+
+    while [[ "$path" != "." && "$path" != ".." && "$path" != "" ]]; do
+        if [ -f "$path/replace.sh" ]; then
+            REPLACE_PATH="$path/replace.sh"
+            break
+        fi
+        path="$(/usr/bin/dirname "$path")"
+    done
+}
+
+exec_flags() {
+    E_PATH=$1
+    E_COMPILFLAG=$COMPILFLAG
+    E_ARGS=`/usr/bin/grep E_ARGS $E_PATH`
+    IFS=' ' read -ra E_ARGS <<< "$E_ARGS"
+
+    if [ "$E_ARGS" != "" ]; then
+        if [ ${E_ARGS[1]} == "E_ARGS" ]; then
+            for (( n=0; n < ${#E_ARGS[*]}; n++))
+            do
+                var="${E_ARGS[n]}"
+                arrModular=(${var//=/ })
+
+                if [ "${arrModular[0]}" == "--COMPILFLAG" ] ; then
+                    E_COMPILFLAG=${arrModular[1]}
+                    E_COMPILFLAG+="="
+                    E_COMPILFLAG+=${arrModular[2]}
+                fi
+            done
+        fi
+    fi
+}
+
 #launch one test
 if [ "$argv" != "" ]; then
     MAINPATH="${TESTPATH}${argv}"
@@ -196,7 +245,7 @@ if [ "$argv" != "" ]; then
     exit 0
 fi
 
-printf "=========TESTS=========\n\n"
+printf "=========TESTS=========\n"
 
 FILES=`/usr/bin/find ${TESTPATH} -name "*.cpp"`
 

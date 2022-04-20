@@ -6,7 +6,7 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/11 14:27:43 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/18 18:11:24 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/20 12:21:21 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -514,6 +514,94 @@ class ft::map {
 		}
 };
 
+namespace ft {
 
+	/* ************************************************************************** */
+	/*                                                                            */
+	/*            @COMPARAISON                                                    */
+	/*                                                                            */
+	/* ************************************************************************** */
+
+	template <class Key, class T, class Compare, class Allocator>
+		bool operator==( const ft::map<Key,T,Compare,Allocator>& lhs, const ft::map<Key,T,Compare,Allocator>& rhs )
+		{
+			Compare comp;
+
+			if ( lhs.size() != rhs.size() )
+				return false;
+			typename ft::map<Key, T, Compare, Allocator>::iterator it = lhs.begin();
+			typename ft::map<Key, T, Compare, Allocator>::iterator itr = rhs.begin();
+			for ( ; it != lhs.end(); ++it, ++itr ) {
+
+				if ( comp( it->first, itr->first ) != false || comp( itr->first, it->first ) != false )
+					return false;
+			}
+			return true;
+		}
+
+	template <class Key, class T, class Compare, class Allocator>
+		bool operator!=( const ft::map<Key,T,Compare,Allocator>& lhs, const ft::map<Key,T,Compare,Allocator>& rhs )
+		{
+			return ( !(lhs == rhs) );
+		}
+
+	/*************************
+	* @> / >=
+	* ***********************/
+
+	template <class Key, class T, class Compare, class Allocator>
+		bool operator<( const ft::map<Key,T,Compare,Allocator>& lhs, const ft::map<Key,T,Compare,Allocator>& rhs )
+		{
+			Compare comp;
+
+			if ( lhs.size() > rhs.size() )
+				return false;
+			else if ( lhs.size() < rhs.size() )
+				return true;
+			
+			typename ft::map<Key, T, Compare, Allocator>::iterator it = lhs.begin();
+			typename ft::map<Key, T, Compare, Allocator>::iterator itr = rhs.begin();
+			for ( ; it != lhs.end(); ++it, ++itr ) {
+
+				if ( comp( it->first, itr->first ) )
+					return true;
+			}
+			return false;
+		}
+
+	template <class Key, class T, class Compare, class Allocator>
+		bool operator<=( const ft::map<Key,T,Compare,Allocator>& lhs, const ft::map<Key,T,Compare,Allocator>& rhs )
+		{
+			return ( lhs < rhs || lhs == rhs );
+		}
+
+	/*************************
+	* @< / <=
+	* ***********************/
+
+	template <class Key, class T, class Compare, class Allocator>
+		bool operator>( const ft::map<Key,T,Compare,Allocator>& lhs, const ft::map<Key,T,Compare,Allocator>& rhs )
+		{
+			return ( rhs < lhs );
+		}
+
+	template <class Key, class T, class Compare, class Allocator>
+		bool operator>=( const ft::map<Key,T,Compare,Allocator>& lhs, const ft::map<Key,T,Compare,Allocator>& rhs )
+		{
+			return ( rhs <= lhs );
+		}
+}
+
+/*************************
+* @specialize std::swap
+* ***********************/
+
+namespace std {
+	template <class Key, class T, class Compare, class Allocator>
+		void swap ( ft::map<Key,T,Compare,Allocator>& lhs, ft::map<Key,T,Compare,Allocator>& rhs )
+		{
+			lhs.swap(rhs);
+		}
+}
 
 #endif

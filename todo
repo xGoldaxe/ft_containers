@@ -1,9 +1,4 @@
-map comparaison
-
 tree allocator (fix)
-
-map swap overload
-
 ===================
 
 iterator_traits
@@ -15,6 +10,8 @@ is_integral
 equal
 
 std::pair
+
+std::make_pair
 
 replace.sh rule for tester
 
