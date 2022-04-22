@@ -5,21 +5,21 @@
 
 int main( void ) {
 
-    typedef std::pair<int, std::string> pair_type;
+    typedef ft::pair<int, std::string> pair_type;
 
     ft::map<int, std::string> bst;
 
-    pair_type pair = std::make_pair(9, "salut");
+    pair_type pair = ft::make_pair(9, "salut");
 	bst.insert(pair);
-	pair = std::make_pair(2, "les");
+	pair = ft::make_pair(2, "les");
 	bst.insert(pair);
-	pair = std::make_pair(4, "amis");
+	pair = ft::make_pair(4, "amis");
 	bst.insert(pair);
-	pair = std::make_pair(12, "comment");
+	pair = ft::make_pair(12, "comment");
 	bst.insert(pair);
-	pair = std::make_pair(14, "allez");
+	pair = ft::make_pair(14, "allez");
 	bst.insert(pair);
-	pair = std::make_pair(7, "vous");
+	pair = ft::make_pair(7, "vous");
 	bst.insert(pair);
 
 	std::cout << "<-----------{normal usage}----------->" << std::endl;

@@ -5,26 +5,26 @@
 
 int main( void ) {
 
-    typedef std::pair<std::string, int> pair_type;
+    typedef ft::pair<std::string, int> pair_type;
 
     ft::map<std::string, int> bst;
 
 	std::cout << bst.size() << std::endl;
 
-    pair_type pair = std::make_pair("aa", 1);
+    pair_type pair = ft::make_pair("aa", 1);
 	bst.insert(pair);
 
 	std::cout << bst.size() << std::endl;
 
-	pair = std::make_pair("bb", 2);
+	pair = ft::make_pair("bb", 2);
 	bst.insert(pair);
-	pair = std::make_pair("cc", 3);
+	pair = ft::make_pair("cc", 3);
 	bst.insert(pair);
-	pair = std::make_pair("dsd", 4);
+	pair = ft::make_pair("dsd", 4);
 	bst.insert(pair);
-	pair = std::make_pair("qewqe", 5);
+	pair = ft::make_pair("qewqe", 5);
 	bst.insert(pair);
-	pair = std::make_pair("dsada", 6);
+	pair = ft::make_pair("dsada", 6);
 	bst.insert(pair);
 
 	std::cout << bst.size() << std::endl;

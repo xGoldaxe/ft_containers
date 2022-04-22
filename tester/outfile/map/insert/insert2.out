@@ -1,0 +1,17 @@
+0
+<-----------{already exist case}----------->
+size: 4
+bb:2
+cc:3
+qewqe:5
+<-----------{normal case}----------->
+size: 5
+salut:3
+<-----------{out iterator case}----------->
+size: 6
+...:666
+aa:1
+bb:2
+cc:3
+qewqe:5
+salut:3

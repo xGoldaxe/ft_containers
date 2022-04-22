@@ -7,15 +7,15 @@
 int main( void ) {
 
     return 0;
-    typedef std::pair<int, std::string> pair_type;
+    typedef ft::pair<int, std::string> pair_type;
 
     ft::map<int, std::string> bst;
 
-    pair_type pair = std::make_pair(1, "salut");
+    pair_type pair = ft::make_pair(1, "salut");
 	bst.insert(pair);
 	for (size_t i = 2; i < 100000; i++)
 	{
-		pair = std::make_pair(i, "les");
+		pair = ft::make_pair(i, "les");
 		bst.insert(pair);
 	}
 	

@@ -6,7 +6,7 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 17:11:27 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/20 17:48:57 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/22 16:37:50 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,5 +37,9 @@
 #include "map_iterator.hpp"
 #include "map_iterator_const.hpp"
 #include "enable_if.hpp"
+#include "is_integral.hpp"
+#include "lexicographical_compare.hpp"
+#include "pair.hpp"
+#include "iterator_traits.hpp"
 
 #endif

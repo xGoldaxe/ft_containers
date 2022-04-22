@@ -6,12 +6,14 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/11 14:27:43 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/20 12:21:21 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/22 16:25:16 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MAP_HPP
 #	define MAP_HPP
+
+#include "pair.hpp"
 
 template < class value_type, class compare >
 bool	compare_template( value_type a, value_type b ) {
@@ -24,7 +26,7 @@ template <
 	class Key,
 	class T,
 	class Compare = std::less<Key>,
-	class Allocator = std::allocator<std::pair<const Key, T> >
+	class Allocator = std::allocator<ft::pair<const Key, T> >
 >
 
 class ft::map {
@@ -37,7 +39,7 @@ class ft::map {
 		/* ************************************************************************** */
 		typedef Key 								key_type;
 		typedef T									mapped_type;
-		typedef std::pair<const Key, T> 			value_type;
+		typedef ft::pair<const Key, T> 				value_type;
 		typedef std::size_t 						size_type;
 		typedef std::ptrdiff_t 						difference_type;
 		typedef Compare								key_compare;
@@ -204,7 +206,7 @@ class ft::map {
 			}
 			catch(const std::exception& e)
 			{
-				this->insert( std::make_pair( key, T() ) );
+				this->insert( ft::make_pair( key, T() ) );
 				return ( this->at(key) );
 			}
 		};
@@ -297,17 +299,17 @@ class ft::map {
 		* @insert
 		* ***********************/
 
-		std::pair<iterator, bool> insert( const value_type& value) {
+		ft::pair<iterator, bool> insert( const value_type& value) {
 
 			node_t* ptr = this->_search(value);
 
 			if (ptr != NULL) {
-				return ( std::make_pair( iterator( this->_tree, ptr ), false ) );
+				return ( ft::make_pair( iterator( this->_tree, ptr ), false ) );
 			}
 			//else
 			node_t* it = this->_tree->insert(value);
 			this->_size++;
-			return ( std::make_pair( iterator( this->_tree, it ), true ) );
+			return ( ft::make_pair( iterator( this->_tree, it ), true ) );
 		};
 
 		iterator insert( iterator hint, const value_type& value ) {
@@ -412,20 +414,20 @@ class ft::map {
 		* ***********************/
 	private:
 		template < class Ite >
-		std::pair<Ite, Ite> _equal_range( const Key& key ) const {
+		ft::pair<Ite, Ite> _equal_range( const Key& key ) const {
 
 			Ite first = lower_bound(key);
 			Ite last = upper_bound(key);
-			return std::pair<Ite, Ite>(first, last);
+			return ft::pair<Ite, Ite>(first, last);
 		};
 
 	public:
-		std::pair<iterator, iterator> equal_range( const Key& key ) {
+		ft::pair<iterator, iterator> equal_range( const Key& key ) {
 
 			return _equal_range<iterator>(key);
 		};
 
-		std::pair<const_iterator, const_iterator> equal_range( const Key& key ) const {
+		ft::pair<const_iterator, const_iterator> equal_range( const Key& key ) const {
 
 			return _equal_range<const_iterator>(key);
 		}

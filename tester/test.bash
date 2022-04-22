@@ -20,6 +20,14 @@ FOLDER_PATH=""
 PASS=0
 NB_TEST=0
 
+# COLORS
+NONE="\033[0m"
+CL_LINE="\033[2K"
+B_RED="\033[1;31m"
+B_GREEN="\033[1;32m"
+B_MAGENTA="\033[1;35m"
+B_CYAN="\033[1;36m"
+
 cd ".."
 $make "relib" > /dev/null
 cd "tester"
@@ -73,6 +81,9 @@ $mkdir -p outfile diff tests_ft execs
 
 
 do_test() {
+    #tests percentage
+    ((NB_TEST++))
+
     # args
     TEST=$1
 
@@ -164,6 +175,7 @@ do_test() {
 
         if [[ "$valgrind" == "" ]] ; then
             echo "✅ [" $NAME "] -OK"
+            ((PASS++))
         else
             #valgrind error
             CONDITION=`/usr/bin/cat outfile/.errors | /usr/bin/grep "ERROR SUMMARY:" | /usr/bin/awk '{ print $4}' `
@@ -174,6 +186,7 @@ do_test() {
                 if [[ "$CONDITION" != "" ]]
                 then
                     echo "✅ [" $NAME "] -OK"
+                    ((PASS++))
                 else
                     echo "❌ [" $NAME "] -KO (leak)"
                 fi
@@ -245,7 +258,9 @@ if [ "$argv" != "" ]; then
     exit 0
 fi
 
-printf "=========TESTS=========\n"
+printf "$B_CYAN       =============================       \n"
+printf "======== PLEVEQUE TESTER FRAMEWORK ========\n"
+printf "       =============================       $NONE\n"
 
 FILES=`/usr/bin/find ${TESTPATH} -name "*.cpp"`
 
@@ -264,4 +279,9 @@ do
 
 done
 
-printf "\n=======END  TESTS=======\n"
+printf "\n$B_GREEN"
+if [ $PASS -eq $NB_TEST ] ; then
+    printf "          -- ALL TESTS SUCCEED --          "
+else
+    printf "============== PASS: %d/%d =============" $PASS $NB_TEST
+fi

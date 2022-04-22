@@ -1,0 +1,10 @@
+<-----------{default constructor}----------->
+true:true
+<-----------{arg constructor}----------->
+true:true
+<-----------{pair constructor}----------->
+true:true
+<-----------{= operator}----------->
+true:true
+<-----------{make_pair}----------->
+true:true

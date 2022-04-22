@@ -1,0 +1,15 @@
+<-----------{swapping}----------->
+b size:5
+b2 size:3
+b size:3
+b2 size:5
+*a:1
+*d:666
+*e:333
+<-----------{pointer still valide}----------->
+true
+-a:1
+-b:2
+-c:3
+-d:4
+-e:3

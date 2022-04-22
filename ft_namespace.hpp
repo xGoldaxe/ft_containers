@@ -6,7 +6,7 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 17:09:42 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/20 17:51:41 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/22 16:40:58 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,6 @@ namespace ft {
 
     template <typename Iter>
     class reverse_iterator;
-
-    template < class Iter >
-    class iterator_traits;
 
     /*************************
     * @enable if

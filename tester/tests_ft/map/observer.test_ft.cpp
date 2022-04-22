@@ -16,8 +16,8 @@ int main( void ) {
 	std::cout << "<-----------{value comp}----------->" << std::endl;
 	ft::map<std::string, int>::value_compare comp_func = bst.value_comp();
 
-	std::pair<std::string, int> val = std::make_pair("salut", 2);
-	std::pair<std::string, int> it = std::make_pair("bonjour", 4);
+	ft::pair<std::string, int> val = ft::make_pair("salut", 2);
+	ft::pair<std::string, int> it = ft::make_pair("bonjour", 4);
 	bool before = comp_func(it, val);
 	bool after = comp_func(val, it);
 	std::cout << before << std::endl;

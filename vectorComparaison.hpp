@@ -6,7 +6,7 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/11 12:27:48 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/11 12:59:55 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/22 15:43:41 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 
 #include "ft.hpp"
+#include "lexicographical_compare.hpp"
 
 
 namespace ft {
@@ -28,11 +29,11 @@ namespace ft {
 	template< class T, class Alloc >
 		bool operator==( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs )
 		{
-			return !(lexicographical_compare( 
+			return !(ft::lexicographical_compare( 
 						lhs.begin(), lhs.end(),
 						rhs.begin(), rhs.end() 
 					)) && 
-					!(lexicographical_compare( 
+					!(ft::lexicographical_compare( 
 						rhs.begin(), rhs.end(),
 						lhs.begin(), lhs.end() 
 					));
@@ -51,7 +52,7 @@ namespace ft {
 	template< class T, class Alloc >
 		bool operator<( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs )
 		{
-			return ( std::lexicographical_compare( lhs.begin(), lhs.end(), rhs.begin(), rhs.end() ) );
+			return ( ft::lexicographical_compare( lhs.begin(), lhs.end(), rhs.begin(), rhs.end() ) );
 		}
 
 	template< class T, class Alloc >

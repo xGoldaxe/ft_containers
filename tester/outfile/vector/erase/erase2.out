@@ -1,0 +1,21 @@
+<-----------{erase in the middle}----------->
+comment
+Size: 6 // Capacity: 8
+<>salut
+<>comment
+<>allez
+<>je
+<>suis
+<>pleveque
+<-----------{begin = end}----------->
+comment
+Size: 6 // Capacity: 8
+<>salut
+<>comment
+<>allez
+<>je
+<>suis
+<>pleveque
+<-----------{erase first last}----------->
+salut
+Size: 0 // Capacity: 8

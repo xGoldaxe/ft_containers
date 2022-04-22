@@ -3,18 +3,6 @@ tree allocator (fix)
 
 iterator_traits
 
-enable_if
-
-is_integral
-
-equal
-
-std::pair
-
-std::make_pair
-
-replace.sh rule for tester
-
 ===================
 
 set

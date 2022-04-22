@@ -6,7 +6,7 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/01 15:45:46 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/01 16:02:55 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/22 16:41:29 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,21 +16,29 @@
 #include <iostream>
 #include <string>
 
-template < class Iter >
-class iterator_traits
+namespace ft
 {
+	/* iterator template */
+	template < class Iter >
+	struct iterator_traits
+	{
+		typedef typename Iter::difference_type			difference_type;
+		typedef typename Iter::value_type				value_type;
+		typedef typename Iter::pointer					pointer;
+		typedef typename Iter::reference				reference;
+		typedef typename Iter::iterator_category		iterator_category;
+	};
 
-    private:
-
-    public:
-        /* coplien */
-        iterator_traits( void );
-        iterator_traits( iterator_traits const &src );
-        ~iterator_traits( void );
-
-        iterator_traits &   operator=( iterator_traits const & rhs );
-        /* end coplien */
+	/* pointer specialization */
+	template < class T >
+	struct iterator_traits<T*>
+	{
+		typedef std::ptrdiff_t							difference_type;
+		typedef T										value_type;
+		typedef T*										pointer;
+		typedef T&										reference;
+		typedef std::random_access_iterator_tag			iterator_category;
+	};
 };
-
 
 #endif

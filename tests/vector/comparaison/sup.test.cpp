@@ -10,8 +10,8 @@ int main( void ) {
     std::cout << "<-----------{self}----------->" << std::endl;
 	std::cout << "< :" << (t < t) << std::endl;
 	std::cout << "<= :" << (t <= t) << std::endl;
-    std::cout << ">= :"  << (t >= b) << std::endl;
-	std::cout << ">:"  << (t > b) << std::endl;
+    std::cout << ">= :"  << (t >= t) << std::endl;
+	std::cout << ">:"  << (t > t) << std::endl;
 
     std::cout << "<-----------{same shape}----------->" << std::endl;
 	std::cout << "< :"  << (t < to) << std::endl;

@@ -5,23 +5,23 @@
 
 int main( void ) {
 
-    typedef std::pair<std::string, int> pair_type;
+    typedef ft::pair<std::string, int> pair_type;
 	std::cout << std::boolalpha; 
 
     ft::map<std::string, int> bst;
 
 	std::cout << bst.size() << std::endl;
 
-    pair_type pair = std::make_pair("aa", 1);
+    pair_type pair = ft::make_pair("aa", 1);
 	bst.insert(pair);
-	pair = std::make_pair("bb", 2);
+	pair = ft::make_pair("bb", 2);
 	bst.insert(pair);
-	pair = std::make_pair("cc", 3);
+	pair = ft::make_pair("cc", 3);
 	bst.insert(pair);
 
-	pair = std::make_pair("qewqe", 5);
+	pair = ft::make_pair("qewqe", 5);
 	bst.insert(pair);
-	pair = std::make_pair("bb", 3);
+	pair = ft::make_pair("bb", 3);
 	
 	std::cout << "<-----------{already exist case}----------->" << std::endl;
 	ft::map<std::string, int>::iterator it = bst.begin();
@@ -35,7 +35,7 @@ int main( void ) {
 	}
 
 	std::cout << "<-----------{normal case}----------->" << std::endl;
-	pair = std::make_pair("salut", 3);
+	pair = ft::make_pair("salut", 3);
 	iter = bst.insert(it, pair);
 	std::cout << "size: " << bst.size() << std::endl;
 	for (; iter != bst.end(); ++iter) {
@@ -44,7 +44,7 @@ int main( void ) {
 
 	std::cout << "<-----------{out iterator case}----------->" << std::endl;
 	it = bst.end();
-	pair = std::make_pair("...", 666);
+	pair = ft::make_pair("...", 666);
 	iter = bst.insert(it, pair);
 	std::cout << "size: " << bst.size() << std::endl;
 	for (; iter != bst.end(); ++iter) {

@@ -6,21 +6,21 @@
 
 int main( void ) {
 
-    typedef std::pair<int, int> pair_type;
+    typedef ft::pair<int, int> pair_type;
 
     ft::map<int, int> bst;
 
-    pair_type pair = std::make_pair(9, 3);
+    pair_type pair = ft::make_pair(9, 3);
 	bst.insert(pair);
-	pair = std::make_pair(2, 1);
+	pair = ft::make_pair(2, 1);
 	bst.insert(pair);
-	pair = std::make_pair(4, 1);
+	pair = ft::make_pair(4, 1);
 	bst.insert(pair);
-	pair = std::make_pair(12, 1);
+	pair = ft::make_pair(12, 1);
 	bst.insert(pair);
-	pair = std::make_pair(14, 1);
+	pair = ft::make_pair(14, 1);
 	bst.insert(pair);
-	pair = std::make_pair(7, 1);
+	pair = ft::make_pair(7, 1);
 	bst.insert(pair);
 
 	bst.at(2) = 666;
