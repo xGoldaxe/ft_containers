@@ -6,7 +6,7 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 17:11:27 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/22 16:37:50 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/22 17:24:44 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,5 +41,6 @@
 #include "lexicographical_compare.hpp"
 #include "pair.hpp"
 #include "iterator_traits.hpp"
+#include "stack.hpp"
 
 #endif
