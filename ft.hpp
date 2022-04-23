@@ -6,7 +6,7 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 17:11:27 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/22 17:24:44 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/23 15:28:48 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@
 #include "vector.hpp"
 #include "ft_namespace.hpp"
 #include "random_iterator.hpp"
+#include "random_iterator_const.hpp"
 #include "reverse_iterator.hpp"
 #include "vectorComparaison.hpp"
 #include "redBlackTree.hpp"
@@ -42,5 +43,6 @@
 #include "pair.hpp"
 #include "iterator_traits.hpp"
 #include "stack.hpp"
+#include "set.hpp"
 
 #endif

@@ -10,6 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#ifndef CONST_MAP_ITERATOR_HPP
+#	define CONST_MAP_ITERATOR_HPP
+
 #include "ft.hpp"
 
 template <
@@ -19,12 +22,13 @@ template <
 
 class ft::const_map_iterator : public ft::map_iterator<T, Tree>
 	{
-	public:
-	
-	private:		
+	private:
 		typedef ft::map_iterator<T, Tree>				iterator_noconst;
-		typedef const T&								const_reference;
-		typedef const T									const_value_type;
+
+	public:
+		typedef const T&								reference;
+		typedef const T*								pointer;
+		typedef const T									value_type;
 		
 	public:
 		/* ************************************************************************** */
@@ -50,15 +54,17 @@ class ft::const_map_iterator : public ft::map_iterator<T, Tree>
 		/*            @overrided func                                                 */
 		/*                                                                            */
 		/* ************************************************************************** */
-		const_reference operator*() const {
+		reference operator*() const {
 
 			return ( iterator_noconst::operator*() );
 		};
 		/*************************
 		* @i->m equivalent (*i).m
 		* ***********************/
-		const_value_type *operator->() const {
+		value_type *operator->() const {
 
 			return ( iterator_noconst::operator->() );
 		};
 };
+
+#endif

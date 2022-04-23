@@ -6,7 +6,7 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 16:54:09 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/17 15:12:29 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/23 13:52:18 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,9 @@ class ft::vector
 		/* ************************************************************************** */
 
 		typedef ft::random_iterator<value_type, Allocator> iterator;
-		typedef const ft::random_iterator<value_type, Allocator> const_iterator;
+		typedef ft::const_random_iterator<value_type, Allocator> const_iterator;
 		typedef ft::reverse_iterator<iterator> reverse_iterator;
-		typedef const ft::reverse_iterator<iterator> const_reverse_iterator;
+		typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
 
 	private:
 		Allocator 	_alctr;
@@ -434,13 +434,13 @@ class ft::vector
 
 			return iterator( this->_arr, this->_arr + this->_size, this->_size );
 		};
-		const iterator begin(void) const {
+		const_iterator begin(void) const {
 
-			return iterator( this->_arr, this->_arr + this->_size, 0 );
+			return const_iterator( iterator( this->_arr, this->_arr + this->_size, 0 ) );
 		};
-		const iterator end(void) const {
+		const_iterator end(void) const {
 
-			return iterator( this->_arr, this->_arr + this->_size, this->_size );
+			return const_iterator( iterator( this->_arr, this->_arr + this->_size, this->_size ) );
 		};
 		/*************************
 		* @reverse iterators

@@ -72,6 +72,14 @@ int main( void ) {
 	std::cout << cbit->first << ":" << cbit->second << std::endl;
 	std::cout << abit->first << ":" << abit->second << std::endl;
 
+
+    std::cout << "<-----------{member types}----------->" << std::endl;
+    std::cout << sizeof( std::map<std::string, int>::const_iterator::iterator_category ) << std::endl;
+    std::cout << sizeof( std::map<std::string, int>::const_iterator::value_type ) << std::endl;
+    std::cout << sizeof( std::map<std::string, int>::const_iterator::difference_type ) << std::endl;
+    std::cout << sizeof( std::map<std::string, int>::const_iterator::pointer ) << std::endl;
+    std::cout << sizeof( std::map<std::string, int>::const_iterator::reference ) << std::endl;
+
 	std::cout << "<-----------{cbegin}----------->" << std::endl;
 	const std::map<std::string, int>::const_iterator cbeg = bst.begin();
 	std::cout << cbeg->first << ":" << cbeg->second << std::endl;

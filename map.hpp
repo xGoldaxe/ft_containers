@@ -6,7 +6,7 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/11 14:27:43 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/22 16:25:16 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/23 16:19:05 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ bool	compare_template( value_type a, value_type b ) {
 
 	return !compare()( a.first, b.first );
 };
-
 
 template <
 	class Key,
@@ -80,21 +79,20 @@ class ft::map {
 		typedef typename Allocator::template rebind<tree_type>::other	tree_allocator_t;
 		tree_ptr _construct_tree() {
 		
-			// tree_type			tree_value( &compare_template<value_type, Compare> );
-			// tree_allocator_t	tree_allocator;
-			// tree_ptr tree = tree_allocator.allocate(1);
-			// tree_allocator.construct(tree, tree_value);
-			// return tree;
-			return new tree_type( &compare_template<value_type, Compare> );
+			tree_type			tree_value( &compare_template<value_type, Compare> );
+			tree_allocator_t	tree_allocator( this->_alctr );
+			tree_ptr tree = tree_allocator.allocate(1);
+			tree_allocator.construct(tree, tree_value);
+			return tree;
 		}
 		void	_delete_tree(tree_ptr tree) {
 			
-			// tree_allocator_t	tree_allocator;
-			// tree_allocator.destroy(tree);
-			// tree_allocator.deallocate(tree, 1);
-			// tree = NULL;
-			delete tree;
+			tree_allocator_t	tree_allocator;
+			tree_allocator.destroy(tree);
+			tree_allocator.deallocate(tree, 1);
 			tree = NULL;
+			// delete tree;
+			// tree = NULL;
 		}
 	protected:
 		/* ************************************************************************** */
@@ -281,7 +279,7 @@ class ft::map {
 
 		size_type max_size() const {
 
-			return (std::numeric_limits<difference_type>::max() / sizeof(value_type) + sizeof(Node<DataType<value_type> >) );
+			return (std::numeric_limits<difference_type>::max() / sizeof(Node<DataType<value_type> >) );
 		}
 
 		/* ************************************************************************** */

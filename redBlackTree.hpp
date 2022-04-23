@@ -6,11 +6,14 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/14 15:40:37 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/18 17:01:28 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/23 15:39:53 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <iostream>
+
+#ifndef REDBLACKTREE_HPP
+#	define REDBLACKTREE_HPP
 
 template < class T >
 class DataType {
@@ -105,7 +108,9 @@ class RedBlackTree {
 		typedef node_t			*NodePtr;
 
 		Allocator				_alctr;
+	protected:
 		bool 					(*_compare)( T a, T b );
+	private:
 		NodePtr 				root;
 		node_t					tnull_stack;
 		NodePtr 				TNULL;
@@ -121,23 +126,6 @@ class RedBlackTree {
 			NodePtr	node = node_allocator.allocate(1);
 			node_allocator.construct(node, node_value);
 			return node;
-		}
-
-		void preOrderHelper(NodePtr node) {
-			if (node != TNULL) {
-				std::cout << node->data << " ";
-				preOrderHelper(node->left);
-				preOrderHelper(node->right);
-			}
-		}
-
-		void inOrderHelper(NodePtr node) {
-			if (node != TNULL) {
-				inOrderHelper(node->left);
-				// std::cout << node->data << " ";
-				std::cout << node->data.data.first << " " << node->data.data.second << std::endl;
-				inOrderHelper(node->right);
-			}
 		}
 
 		// Post order
@@ -343,6 +331,10 @@ class RedBlackTree {
 			cleanTree();
 		}
 
+		/*************************
+		* @constructor
+		* ***********************/
+
 		RedBlackTree( bool (*compare)( T a, T b ) ) : 
 			_alctr( Allocator() ),
 			_compare( compare ),
@@ -356,13 +348,25 @@ class RedBlackTree {
 			root = TNULL;
 		}
 
-		void preorder() {
-			preOrderHelper(this->root);
+		RedBlackTree( const RedBlackTree& ref ) :
+			_alctr( ref.get_alloc() ),
+			_compare( ref._compare ),
+			tnull_stack( data_t( T(), ref._compare ) )
+		{
+			this->tnull_stack.color = 0;
+			this->tnull_stack.left = NULL;
+			this->tnull_stack.right = NULL;
+			
+			this->TNULL = &tnull_stack;
+			root = TNULL;
 		}
 
-		void inorder() {
-			inOrderHelper(this->root);
+	protected:
+		Allocator get_alloc(void) const {
+			return this->_alctr;
 		}
+
+	public:
 
 		void cleanTree() {
 			postOrderFree(this->root);
@@ -521,12 +525,6 @@ class RedBlackTree {
 			deleteNodeHelper( node );
 		}
 
-		void printTree() {
-			if (root) {
-				printHelper(this->root, "", true);
-			}
-		}
-
 		NodePtr getBegin() const {
 			if (this->root == TNULL)
 				return NULL;
@@ -546,3 +544,5 @@ class RedBlackTree {
 			otherRoot = tmpRoot;
 		}
 };
+
+#endif

@@ -10,6 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+
+#ifndef MAP_ITERATOR_HPP
+#	define MAP_ITERATOR_HPP
+
 #include "ft.hpp"
 
 template <
@@ -213,3 +217,6 @@ class ft::map_iterator : public std::iterator
 			return tmp;
 		};		
 };
+
+
+#endif

@@ -68,11 +68,6 @@ class ft::random_iterator : public std::iterator
 		void	_incr( difference_type n ) {
 			
 			this->_position += n;
-			// if ( this->_position < 0)
-			// 	this->_position = static_cast<difference_type>(0);
-			//comparing the pointer adress
-			// if ( (this->_from + this->_position) > this->_to )
-			// 	this->_position = static_cast<difference_type>(0);
 		}
 		void	_incrNoLimit( difference_type n ) {
 			
@@ -93,12 +88,11 @@ class ft::random_iterator : public std::iterator
 
 		/*************************
 		* @parameter constructor
-		* ( should be hided from final user )
 		* ***********************/
 		random_iterator( T* from, T* to, difference_type position ) :
 			_from( from ), _to( to ), _position( position )
 		{};
-		
+
 		/*************************
 		* @copy constructor
 		* ***********************/
@@ -161,14 +155,14 @@ class ft::random_iterator : public std::iterator
 		* the end value, but still
 		* remain a undefined behavior
 		* ***********************/
-		reference& operator*(void) {
+		reference& operator*(void) const {
 
 			return ( *static_cast<value_type *>(this->_from + this->_position) );
 		};
 		/*************************
 		* @i->m equivalent (*i).m
 		* ***********************/
-		value_type *operator->() {
+		value_type *operator->() const {
 
 			return ( this->_from + this->_position );
 		};
@@ -257,7 +251,7 @@ class ft::random_iterator : public std::iterator
 			return static_cast<difference_type>(0);
 		};
 
-		reference& operator[]( const difference_type n ) {
+		reference& operator[]( const difference_type n ) const {
 
 			return ( *static_cast<value_type *>(this->_from + this->_position + n) );
 		};
