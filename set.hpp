@@ -6,7 +6,7 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/11 14:27:43 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/23 18:29:42 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/23 18:40:57 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 
 #include "pair.hpp"
 #include "redBlackTree.hpp"
-#include "functional"
 #include "map_iterator.hpp"
 #include "map_iterator_const.hpp"
 

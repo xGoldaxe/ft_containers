@@ -6,14 +6,14 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/14 15:40:37 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/23 15:39:53 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/23 18:37:54 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <iostream>
-
 #ifndef REDBLACKTREE_HPP
 #	define REDBLACKTREE_HPP
+
+#include <iostream>
 
 template < class T >
 class DataType {

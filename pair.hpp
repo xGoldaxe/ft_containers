@@ -6,14 +6,13 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/22 15:18:44 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/23 15:37:43 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/23 18:36:04 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PAIR_HPP
 #	define PAIR_HPP
 
-#include "ft.hpp"
 
 namespace ft
 {

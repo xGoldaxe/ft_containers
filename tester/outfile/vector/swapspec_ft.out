@@ -1,0 +1,16 @@
+MEM_USAGE: 5/5
+MEM_USAGE: 2/2
+<>yo
+<>yo
+MEM_USAGE: 5/5
+<>salut
+<>les
+<>amis
+<>comment
+<>allez
+<-----------{it remain valid}----------->
+<><>salut
+<><>les
+<><>amis
+<><>comment
+<><>allez

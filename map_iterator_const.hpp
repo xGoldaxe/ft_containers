@@ -13,58 +13,63 @@
 #ifndef CONST_MAP_ITERATOR_HPP
 #	define CONST_MAP_ITERATOR_HPP
 
-#include "ft.hpp"
+#include "map_iterator.hpp"
 
-template <
-	typename T,
-	typename Tree
->
+namespace ft
+{
 
-class ft::const_map_iterator : public ft::map_iterator<T, Tree>
-	{
-	private:
-		typedef ft::map_iterator<T, Tree>				iterator_noconst;
+	template <
+		typename T,
+		typename Tree
+	>
 
-	public:
-		typedef const T&								reference;
-		typedef const T*								pointer;
-		typedef const T									value_type;
-		
-	public:
-		/* ************************************************************************** */
-		/*                                                                            */
-		/*            @CONSTRUCTOR                                                    */
-		/*                                                                            */
-		/* ************************************************************************** */
-		
-		const_map_iterator(void)
-		{};
-
-		const_map_iterator( iterator_noconst ite ) : iterator_noconst( ite )
+	class const_map_iterator : public ft::map_iterator<T, Tree>
 		{
-		};
+		private:
+			typedef ft::map_iterator<T, Tree>				iterator_noconst;
 
-		/*************************
-		* @destructor
-		* ***********************/
-		virtual ~const_map_iterator(void) {};
+		public:
+			typedef const T&								reference;
+			typedef const T*								pointer;
+			typedef const T									value_type;
+			
+		public:
+			/* ************************************************************************** */
+			/*                                                                            */
+			/*            @CONSTRUCTOR                                                    */
+			/*                                                                            */
+			/* ************************************************************************** */
+			
+			const_map_iterator(void)
+			{};
 
-		/* ************************************************************************** */
-		/*                                                                            */
-		/*            @overrided func                                                 */
-		/*                                                                            */
-		/* ************************************************************************** */
-		reference operator*() const {
+			const_map_iterator( iterator_noconst ite ) : iterator_noconst( ite )
+			{
+			};
 
-			return ( iterator_noconst::operator*() );
-		};
-		/*************************
-		* @i->m equivalent (*i).m
-		* ***********************/
-		value_type *operator->() const {
+			/*************************
+			* @destructor
+			* ***********************/
+			virtual ~const_map_iterator(void) {};
 
-			return ( iterator_noconst::operator->() );
-		};
+			/* ************************************************************************** */
+			/*                                                                            */
+			/*            @overrided func                                                 */
+			/*                                                                            */
+			/* ************************************************************************** */
+			reference operator*() const {
+
+				return ( iterator_noconst::operator*() );
+			};
+			/*************************
+			* @i->m equivalent (*i).m
+			* ***********************/
+			value_type *operator->() const {
+
+				return ( iterator_noconst::operator->() );
+			};
+	};
+
 };
 
 #endif

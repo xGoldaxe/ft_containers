@@ -1,0 +1,38 @@
+<-----{we dont care about comparaison since it point to a particular node in the same tree}----------->
+1
+<-----------{normal case}----------->
+aa:666
+assa:1
+bb:2
+cc:3
+dsada:6
+dsd:4
+dwqdqwd:1
+qdqwdqdas:1
+qewqe:5
+zzzz:1
+<-----------{past end then backward case}----------->
+zzzz:1
+qewqe:5
+qdqwdqdas:1
+dwqdqwd:1
+dsd:4
+dsada:6
+cc:3
+bb:2
+assa:1
+zzzz:1
+qewqe:5
+<-----------{emptry tree}----------->
+<-----------{const ite}----------->
+aa:666
+aa:666
+aa:666
+<-----------{member types}----------->
+1
+40
+8
+8
+40
+<-----------{cbegin}----------->
+aa:666
