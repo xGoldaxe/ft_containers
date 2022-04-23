@@ -6,7 +6,7 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/11 14:27:43 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/23 18:40:57 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/24 01:50:20 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 #include "redBlackTree.hpp"
 #include "map_iterator.hpp"
 #include "map_iterator_const.hpp"
+#include "reverse_iterator.hpp"
+#include <limits>
 
 template < class value_type, class compare >
 bool	compare_template_single( value_type a, value_type b ) {
@@ -189,7 +191,10 @@ namespace ft
 			/*            @ITERATORS                                                      */
 			/*                                                                            */
 			/* ************************************************************************** */
-			typedef ft::map_iterator<value_type, tree_type>				iterator;
+			private:
+				typedef ft::map_iterator<value_type, tree_type>				_iterator;
+			public:
+			typedef ft::const_map_iterator<value_type, tree_type>		iterator;
 			typedef ft::const_map_iterator<value_type, tree_type>		const_iterator;
 			typedef ft::reverse_iterator<iterator>						reverse_iterator;
 			typedef ft::reverse_iterator<const_iterator>				const_reverse_iterator;
@@ -197,23 +202,23 @@ namespace ft
 			iterator begin(void) {
 
 				Node<DataType<value_type> > *begin = this->_tree->getBegin();
-				return iterator( this->_tree, begin );
+				return const_iterator( this->_tree, begin );
 			}
 
 			const_iterator begin(void) const {
 
 				Node<DataType<value_type> > *begin = this->_tree->getBegin();
-				return const_iterator( iterator(this->_tree, begin) );
+				return const_iterator( this->_tree, begin );
 			}
 
 			iterator end() {
 
-				return iterator( this->_tree, NULL );
+				return const_iterator( this->_tree, NULL );
 			}
 
 			const_iterator end() const {
 
-				return const_iterator( iterator( this->_tree, NULL ) );
+				return const_iterator( this->_tree, NULL );
 			}
 
 			reverse_iterator rbegin() {

@@ -46,10 +46,11 @@ namespace ft
 			typedef T*									pointer;
 			typedef T&									reference;
 		
-		private:		
+		protected:		
 			typedef Tree*								tree_ptr;
 			typedef Node<DataType<T> >					node_t;
 			
+		private:
 			tree_ptr			_tree;
 			node_t*				_actual;
 		

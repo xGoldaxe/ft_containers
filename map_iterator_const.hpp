@@ -44,8 +44,12 @@ namespace ft
 			{};
 
 			const_map_iterator( iterator_noconst ite ) : iterator_noconst( ite )
-			{
-			};
+			{};
+
+			const_map_iterator( typename iterator_noconst::tree_ptr tree,
+				typename iterator_noconst::node_t* actual ) :
+				iterator_noconst( ft::map_iterator<T, Tree>(tree, actual) )
+			{};
 
 			/*************************
 			* @destructor
@@ -64,10 +68,11 @@ namespace ft
 			/*************************
 			* @i->m equivalent (*i).m
 			* ***********************/
-			value_type *operator->() const {
+			pointer operator->() const {
 
 				return ( iterator_noconst::operator->() );
 			};
+
 	};
 
 };

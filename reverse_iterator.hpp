@@ -6,13 +6,13 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/03 17:30:41 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/23 20:12:43 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/24 00:00:55 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
-#ifndef REVERSE_ITERATOR_HPP
-#	define REVERSE_ITERATOR_HPP
+#ifndef REVERSE_ITERATOR_CONST_HPP
+#	define REVERSE_ITERATOR_CONST_HPP
 
 #include "iterator_traits.hpp"
 
@@ -65,6 +65,9 @@ namespace ft
 			}
 
 			virtual ~reverse_iterator(void) {}
+
+			template <typename Iter_n>
+			reverse_iterator( const reverse_iterator<Iter_n>& other ) : current( other.base() ) {};
 
 			/*************************
 			* @getter for _iterator
