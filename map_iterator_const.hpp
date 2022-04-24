@@ -73,6 +73,41 @@ namespace ft
 				return ( iterator_noconst::operator->() );
 			};
 
+			const_map_iterator& operator++(void) {
+
+				iterator_noconst::operator++();
+				return ( *this );
+			};
+			/* ************************************************************************** */
+			/*                                                                            */
+			/*            @legacyForwardIterator                                          */
+			/*                                                                            */
+			/* ************************************************************************** */
+			const_map_iterator operator++(int) {
+
+				const_map_iterator tmp = *this;
+				iterator_noconst::operator++();
+				return tmp;
+			};
+
+			/* ************************************************************************** */
+			/*                                                                            */
+			/*            @legacyBidirectionalIterator                                    */
+			/*                                                                            */
+			/* ************************************************************************** */
+			/* past end map_iterator = undefined */
+			const_map_iterator& operator--(void) {
+
+				iterator_noconst::operator--();
+				return ( *this );
+			};
+			const_map_iterator operator--(int) {
+
+				const_map_iterator tmp = *this;
+				iterator_noconst::operator--();
+				return tmp;
+			};	
+
 	};
 
 };

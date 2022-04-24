@@ -1,4 +1,5 @@
 #include "../ft.hpp"
+#include "../ft.hpp"
 #include <vector>
 #include <iostream>
 
@@ -13,7 +14,7 @@ void    print_vector( vector v ) {
 
 int main( void ) {
 
-    std::vector<std::string> t( static_cast<std::size_t>(5), "yo" );
+    ft::vector<std::string> t( static_cast<std::size_t>(5), "yo" );
     t[0] = "salut";
     t[1] = "les";
     t[2] = "amis";
@@ -24,7 +25,7 @@ int main( void ) {
 
 	std::cout << "MEM_USAGE: " << t.size() << "/" << t.capacity() << std::endl;
 
-	std::vector<std::string> to( t.begin(), t.end() );
+	ft::vector<std::string> to( t.begin(), t.end() );
 	std::cout << "!MEM_USAGE: " << to.size() << "/" << to.capacity() << std::endl;
 	print_vector( to );
 

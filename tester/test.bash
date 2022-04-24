@@ -64,6 +64,8 @@ do
         FOLDER_PATH="${arrModular[1]}/"
     elif [ "${arrModular[0]}" == "--COMPILFLAG" ] ; then
         COMPILFLAG=${arrModular[1]}
+    elif [ "$var" == "--leak-check=full" ] ; then
+        valgrind="/usr/bin/valgrind --leak-check=full"
     else
         argv=$var
     fi

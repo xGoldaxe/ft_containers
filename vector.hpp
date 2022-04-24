@@ -6,7 +6,7 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 16:54:09 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/23 20:06:19 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/24 18:24:46 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,9 @@
 #include "random_iterator.hpp"
 #include "random_iterator_const.hpp"
 #include "reverse_iterator.hpp"
+#include "is_integral.hpp"
+#include "enable_if.hpp"
+#include <limits>
 
 namespace ft
 {
@@ -77,14 +80,29 @@ namespace ft
 				return true;
 			}
 
-			iterator	_move_array_forward( iterator begin, iterator end, iterator dest ) {
+			template < typename InputIt >
+			difference_type _get_distance( InputIt begin, InputIt end ) {
 
-				reverse_iterator dest_it( dest + (end - begin) - static_cast<difference_type>(1) );
-				reverse_iterator end_r( begin );
+				difference_type diff = 0;
+				while (begin != end) {
+					++diff;
+					++begin;
+					if ( diff == std::numeric_limits<difference_type>::max() )
+						throw ( std::length_error("_get_distance") );
+				}
+				return diff;
+			}
+
+			template < typename InputIt >
+			InputIt	_move_array_forward( InputIt begin, InputIt end, InputIt dest ) {
+
+				typedef typename ft::reverse_iterator<InputIt> r_ite;
+				r_ite dest_it( dest + (end - begin) - static_cast<difference_type>(1) );
+				r_ite end_r( begin );
 
 				if ( begin > end )
 					return (dest);
-				for ( reverse_iterator it(end); it != end_r; ++dest_it, ++it ) {
+				for ( r_ite it(end); it != end_r; ++dest_it, ++it ) {
 
 					this->_alctr.construct( &*dest_it.base(), *it );
 				}
@@ -107,7 +125,10 @@ namespace ft
 
 				value_type *new_arr = this->_alctr.allocate( new_cap );
 				for ( size_t i = 0; i < ref_size; ++i )
-					this->_alctr.construct( new_arr + i, ref[i] );
+				{
+					value_type r = ref[i];
+					this->_alctr.construct( new_arr + i, r );
+				}
 				return ( new_arr );
 			}
 
@@ -224,13 +245,13 @@ namespace ft
 			/*************************
 			* @RANGE CONSTRUCTOR
 			* ***********************/
-			//look for error when first > last
 			template< class InputIt >
 			vector( InputIt first, InputIt last,
-					const Allocator& alloc = Allocator()
+					const Allocator& alloc = Allocator(),
+					typename ft::enable_if<!ft::is_integral<InputIt>::value >::type* = 0
 			) :
 				_alctr( alloc ),
-				_size( std::distance(first, last) ),
+				_size( this->_get_distance(first, last) ),
 				_capacity( _size ),
 				_arr( this->_alctr.allocate( _capacity ) )
 			{
@@ -254,8 +275,6 @@ namespace ft
 					copy_arr( this->_capacity, other.getArr(), other.getSize() )
 				)
 			{
-
-				// std::cout << "ft_vector copy constructor" << std::endl;
 			}
 
 			/* ************************************************************************** */
@@ -313,10 +332,15 @@ namespace ft
 			/*************************
 			* @ASSING BY ITERATION
 			* ***********************/
-			template < class InputIt >
-			void    assign( InputIt first, InputIt last ) {
+			template<typename InputIt>
+			typename ft::enable_if<!ft::is_integral<InputIt>::value>::type
+			assign( InputIt first, InputIt last ) {
 
-				difference_type diff = last - first;
+				difference_type diff = 0;
+				for (InputIt tmp = first; tmp != last; ++tmp ) {
+					++diff;
+				}
+				
 				this->reserve( diff );
 				this->_size = static_cast<size_type>(diff);
 				for ( size_type i = 0; first != last; ++i, ++first ) {
@@ -562,19 +586,23 @@ namespace ft
 			};
 
 			template< class InputIt >
-			void insert( const_iterator pos, InputIt first, InputIt last ) {
+			typename ft::enable_if<!ft::is_integral<InputIt>::value>::type
+			insert( iterator pos, InputIt first, InputIt last ) {
 
-				if ( pos > this->end() || pos < this->begin() )
-					throw ( std::length_error("vector::insert") );
-				//in case of reallocation
-				difference_type distance = last - first;
+				difference_type distance = _get_distance( first, last );
 				difference_type diff = pos - this->begin();
 				this->_verify_capacity(distance);
 				iterator new_pos = this->begin() + diff;
 
-				this->_move_array_forward( this->begin(), this->end(), this->begin() + distance );
-				this->_move_array_forward( first, last, new_pos );
-				this->_size += distance;
+				this->_move_array_forward( new_pos, this->end(), new_pos + distance);
+				while ( first != last )
+				{
+					this->_alctr.construct( &*new_pos, *first );
+					++first;
+					++new_pos;
+					++this->_size;
+				}
+				// this->_move_array_forward( first, last, new_pos );
 			};
 
 			/*************************
@@ -587,34 +615,30 @@ namespace ft
 			//i assume its a undefined behaviour
 			iterator erase( iterator pos ) {
 
-
-				if ( !(pos > this->end() || pos < this->end() || pos == this->end()) ) {
-					this->_size--;
-					return pos;
-				}
-				// if ( pos > this->end() || pos < this->begin() )
-				// 	throw ( std::length_error("vector::erase") );
-				this->_move_array_backward( pos + 1, this->end(), pos );
-				this->_alctr.destroy( &*(this->end() - 1) );
-				this->_size--;
-				return pos;
+				return this->erase(pos, pos + 1);
 			};
 
 			//if first == last, do nothing
 			iterator erase( iterator first, iterator last ) {
 
+				if ( !(first > this->end() || first < this->end() || first == this->end()) ) {
+					this->_size--;
+					return first;
+				}
+				if ( !(last > this->end() || last < this->end() || last == this->end()) ) {
+					this->_size--;
+					return first;
+				}
+
 				difference_type distance_beg = first - this->begin();
 				this->_move_array_backward( last, this->end(), this->begin() + distance_beg );
 				this->_size -= last - first;
-				return first;
+				return this->begin() + distance_beg;
 			};
 
-
-			void resize( size_type count ) {
-
-				resize( count, value_type() );
-			};
-
+			/*************************
+			* @resize
+			* ***********************/
 			void resize( size_type count, T value = T() ) {
 
 				if ( count > ( 2 * this->size() ) ) 

@@ -6,7 +6,7 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/11 14:27:43 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/24 01:50:20 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/24 17:53:59 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -511,20 +511,15 @@ namespace ft {
 	template <class Key, class Compare, class Allocator>
 		bool operator<( const ft::set<Key,Compare,Allocator>& lhs, const ft::set<Key,Compare,Allocator>& rhs )
 		{
-			Compare comp;
-
-			if ( lhs.size() > rhs.size() )
-				return false;
-			else if ( lhs.size() < rhs.size() )
-				return true;
-			
 			typename ft::set<Key, Compare, Allocator>::iterator it = lhs.begin();
 			typename ft::set<Key, Compare, Allocator>::iterator itr = rhs.begin();
-			for ( ; it != lhs.end(); ++it, ++itr ) {
+			for (; it != lhs.end(); ++it, ++itr ) {
 
-				if ( comp( *it, *itr ) )
+				if ( *it < *itr )
 					return true;
 			}
+			if ( it == lhs.end() && itr != rhs.end() )
+				return true;
 			return false;
 		}
 
@@ -541,13 +536,13 @@ namespace ft {
 	template <class Key, class Compare, class Allocator>
 		bool operator>( const ft::set<Key,Compare,Allocator>& lhs, const ft::set<Key,Compare,Allocator>& rhs )
 		{
-			return ( rhs < lhs );
+			return !( lhs <= rhs );
 		}
 
 	template <class Key, class Compare, class Allocator>
 		bool operator>=( const ft::set<Key,Compare,Allocator>& lhs, const ft::set<Key,Compare,Allocator>& rhs )
 		{
-			return ( rhs <= lhs );
+			return !( lhs <= rhs );
 		}
 }
 
