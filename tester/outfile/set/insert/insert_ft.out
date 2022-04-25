@@ -1,0 +1,21 @@
+0
+Is inserted: true
+LAST INSERTED
+aa
+bb
+cc
+qewqe
+5
+LAST INSERTED
+aa
+bb
+cc
+qewqe
+<-----------{error case}----------->
+Is inserted: false
+size: 5
+LAST INSERTED
+aa
+bb
+cc
+qewqe

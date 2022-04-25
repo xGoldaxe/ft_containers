@@ -1,0 +1,15 @@
+<-----------{self}----------->
+true
+<-----------{same shape}----------->
+true
+<-----------{different shape}----------->
+false
+false
+<-----------{NOT EQUAL}----------->
+<-----------{self}----------->
+false
+<-----------{same shape}----------->
+false
+<-----------{different shape}----------->
+true
+true

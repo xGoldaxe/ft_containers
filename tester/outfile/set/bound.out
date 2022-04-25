@@ -1,0 +1,17 @@
+<-----------{lower bound}----------->
+2
+true
+true
+<-----------{upper bound}----------->
+1
+true
+<-----------{equal range}----------->
+inside
+2
+3
+outside
+true
+true
+<-----------{const}----------->
+2
+3

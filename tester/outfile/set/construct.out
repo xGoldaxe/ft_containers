@@ -1,0 +1,26 @@
+<-----------{range constructor}----------->
+-a
+-b
+-c
+-d
+-e
+<-----------{comp constructor}----------->
+-e
+-d
+-c
+-b
+-a
+<-----------{copy constructor}----------->
+-a
+-b
+-c
+-d
+-e
+<-----------{copy assignement}----------->
+-a
+-b
+-c
+-d
+-e
+-x
+-z
