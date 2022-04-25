@@ -6,7 +6,7 @@
 /*   By: pleveque <pleveque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 16:54:09 by pleveque          #+#    #+#             */
-/*   Updated: 2022/04/24 18:24:46 by pleveque         ###   ########.fr       */
+/*   Updated: 2022/04/25 22:56:00 by pleveque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,14 +38,14 @@ namespace ft
 			/*            @MEMBER TYPES                                                   */
 			/*                                                                            */
 			/* ************************************************************************** */
-			typedef T value_type;
-			typedef Allocator allocator_type;
-			typedef std::size_t size_type;
-			typedef std::ptrdiff_t difference_type;
-			typedef value_type& reference;
-			typedef const value_type& const_reference;
-			typedef typename Allocator::pointer pointer;
-			typedef typename Allocator::const_pointer const_pointer;
+			typedef T 									value_type;
+			typedef Allocator 							allocator_type;
+			typedef std::size_t 						size_type;
+			typedef std::ptrdiff_t 						difference_type;
+			typedef value_type& 						reference;
+			typedef const value_type& 					const_reference;
+			typedef typename Allocator::pointer 		pointer;
+			typedef typename Allocator::const_pointer	const_pointer;
 
 			/* ************************************************************************** */
 			/*                                                                            */
@@ -62,7 +62,7 @@ namespace ft
 			Allocator 	_alctr;
 			size_type	_size;
 			size_type	_capacity;
-			T* 			_arr;
+			pointer 	_arr;
 
 			/* ************************************************************************** */
 			/*                                                                            */
@@ -93,6 +93,31 @@ namespace ft
 				return diff;
 			}
 
+			void _self_construct( iterator it, value_type value ) {
+
+				if ( ( it - this->begin() ) >= static_cast<difference_type>(this->_size) )
+					this->_alctr.construct( &*it, value );
+				else
+					*it = value;
+			}
+
+			pointer _safe_allocate(size_type cap) {
+				
+				if ( cap == 0 )
+					return NULL;
+
+				return this->_alctr.allocate(cap);
+			}
+
+			void _safe_deallocate( pointer ptr, size_type cap ) {
+				
+				if ( ptr == NULL )
+					return ;
+					
+				this->_alctr.deallocate( ptr, cap );
+				ptr = NULL;
+			}
+
 			template < typename InputIt >
 			InputIt	_move_array_forward( InputIt begin, InputIt end, InputIt dest ) {
 
@@ -104,7 +129,7 @@ namespace ft
 					return (dest);
 				for ( r_ite it(end); it != end_r; ++dest_it, ++it ) {
 
-					this->_alctr.construct( &*dest_it.base(), *it );
+					this->_self_construct( dest_it.base(), *it );
 				}
 				return (dest);
 			}
@@ -115,7 +140,7 @@ namespace ft
 					return (dest);
 				for ( iterator it = begin; it != end; ++dest, ++it ) {
 
-					this->_alctr.construct( &*dest, *it );
+					this->_self_construct( dest, *it );
 				}
 				return (dest);
 			}
@@ -123,19 +148,20 @@ namespace ft
 
 			value_type*	copy_arr( size_type new_cap, value_type *ref, size_type ref_size ) {
 
-				value_type *new_arr = this->_alctr.allocate( new_cap );
+				if ( new_cap == 0 )
+					return NULL;
+				value_type *new_arr = this->_safe_allocate( new_cap );
 				for ( size_t i = 0; i < ref_size; ++i )
-				{
-					value_type r = ref[i];
-					this->_alctr.construct( new_arr + i, r );
-				}
+					this->_alctr.construct( new_arr + i, *(ref + i) );
 				return ( new_arr );
 			}
 
 			//could use a non member function with args instead of this
 			value_type* replace_arr( value_type *new_arr ) {
 
-				this->_alctr.deallocate( this->_arr, this->_capacity );
+				for ( size_type i = 0; i < this->_size; ++i )
+					_alctr.destroy( this->_arr + i );
+				this->_safe_deallocate( this->_arr, this->_capacity );
 				this->_arr = new_arr;
 				return (this->_arr);
 			}
@@ -149,8 +175,8 @@ namespace ft
 				}
 				if ( new_cap > this->_capacity ) {
 
-					if ( new_cap <= this->capacity() * 2 )
-						new_cap = this->capacity() * 2;
+					if ( new_cap <= this->size() * 2 )
+						new_cap = this->size() * 2;
 
 					this->reserve(new_cap);
 					return true;
@@ -162,7 +188,9 @@ namespace ft
 
 				for ( size_type i = 0; i < count; ++i ) {
 
-					this->_alctr.construct( dst + i, value );
+					// this->_alctr.destroy( dst + i );
+					// this->_alctr.construct( dst + i, value );
+					*(dst + i) = value;
 				}
 				return dst;
 			};
@@ -202,7 +230,7 @@ namespace ft
 				_alctr(),
 				_size( 0 ),
 				_capacity( _size ),
-				_arr( this->_alctr.allocate( _capacity ) )
+				_arr( this->_safe_allocate( _capacity ) )
 			{
 
 				// std::cout << "ft_vector created!" << std::endl;
@@ -215,7 +243,7 @@ namespace ft
 				_alctr( alloc ),
 				_size( 0 ),
 				_capacity( _size ),
-				_arr( this->_alctr.allocate( _capacity ) )
+				_arr( this->_safe_allocate( _capacity ) )
 			{
 
 				// std::cout << "ft_vector alloc constructor" << std::endl;c
@@ -234,7 +262,7 @@ namespace ft
 				_alctr( alloc ),
 				_size ( count ),
 				_capacity( _size ),
-				_arr( this->_alctr.allocate( _capacity ) )
+				_arr( this->_safe_allocate( _capacity ) )
 			{
 
 				for (size_type i = 0; i < count; ++i)
@@ -253,7 +281,7 @@ namespace ft
 				_alctr( alloc ),
 				_size( this->_get_distance(first, last) ),
 				_capacity( _size ),
-				_arr( this->_alctr.allocate( _capacity ) )
+				_arr( this->_safe_allocate( _capacity ) )
 			{
 
 				size_type i = 0;
@@ -269,8 +297,8 @@ namespace ft
 			* ***********************/
 			vector( const vector& other ) :
 				_alctr( other.get_allocator() ),
-				_size( other.getSize() ),
-				_capacity( other.getCapacity() ),
+				_size( other.getSize()  ),
+				_capacity( other.getSize() ),
 				_arr(
 					copy_arr( this->_capacity, other.getArr(), other.getSize() )
 				)
@@ -288,10 +316,11 @@ namespace ft
 			* ***********************/
 			~vector( void ) {
 				//cleanup
-				for ( iterator it = this->begin(); it != this->end(); ++it )
-					_alctr.destroy( &*it );
-				_alctr.deallocate( this->_arr, this->_capacity );
-				// std::cout << "ft_vector destroyed!" << std::endl;
+				if (this->_arr == NULL)
+					return ;
+				for ( size_type i = 0; i < this->_size; ++i )
+					this->_alctr.destroy( this->_arr + i );
+				this->_safe_deallocate( this->_arr, this->_capacity );
 			};
 
 			/* ************************************************************************** */
@@ -305,12 +334,13 @@ namespace ft
 			* ASSIGNATION =
 			* ***********************/
 			vector &   operator=( vector const & other ) {
-
-
+				
 				if (*this == other)
 					return (*this);
 				//cleanup before modification
-				_alctr.deallocate( this->_arr, this->_capacity );
+				for ( size_type i = 0; i < this->_size; ++i )
+					_alctr.destroy( this->_arr + i );
+				this->_safe_deallocate( this->_arr, this->_capacity );
 
 				this->_alctr = other.get_allocator();
 				this->_size = other.getSize();
@@ -325,8 +355,15 @@ namespace ft
 			void    assign( size_type count, const T& value ) {
 
 				this->reserve( count );
+				for ( size_type i = 0; i < count; ++i ) {
+					this->_self_construct( this->begin() + i, value );
+				}
+				if (this->_size > count) {
+					for ( size_type i = 0; i < (this->_size - count); ++i)
+						this->_alctr.destroy( this->_arr + i );
+				}
 				this->_size = count;
-				_size_cpy(count, value, this->_arr);
+	
 			};
 
 			/*************************
@@ -336,17 +373,23 @@ namespace ft
 			typename ft::enable_if<!ft::is_integral<InputIt>::value>::type
 			assign( InputIt first, InputIt last ) {
 
-				difference_type diff = 0;
+				
+				size_type distance = 0;
 				for (InputIt tmp = first; tmp != last; ++tmp ) {
-					++diff;
+					++distance;
 				}
 				
-				this->reserve( diff );
-				this->_size = static_cast<size_type>(diff);
+				this->reserve( distance );
 				for ( size_type i = 0; first != last; ++i, ++first ) {
 
-					this->_alctr.construct( this->_arr + i, *first );
+					this->_self_construct( this->begin() + i, *first );
 				}
+				if (this->_size > distance) {
+					for ( size_type i = 0; i < (this->_size - distance); ++i)
+						this->_alctr.destroy( this->_arr + i );
+				}
+				this->_size = distance;
+
 			};
 
 			/*************************
@@ -430,10 +473,6 @@ namespace ft
 			* ***********************/
 			T* data( void ) {
 
-				if ( this->_size == 0 ) {
-
-					return ( NULL );
-				}
 				return ( this->_arr );
 			};
 
@@ -531,7 +570,11 @@ namespace ft
 				if ( new_cap <= this->_capacity )
 					return ;
 
-				replace_arr( copy_arr( new_cap, this->_arr, this->_size ) );
+				value_type *new_arr = copy_arr( new_cap, this->_arr, this->_size );
+				for ( size_type i = 0; i < this->_size; ++i)
+					this->_alctr.destroy( this->_arr + i );
+				this->_safe_deallocate( this->_arr, this->_capacity );
+				this->_arr = new_arr;
 				this->_capacity = new_cap;
 			};
 
@@ -560,7 +603,7 @@ namespace ft
 
 				//in case of reallocation
 				difference_type diff = pos - this->begin();
-				this->_verify_capacity(1);
+				this->_verify_capacity( 1 );
 				pos = this->begin() + diff;
 
 				this->_alctr.construct( &*this->end(), *(this->end() - 1) );
@@ -576,13 +619,15 @@ namespace ft
 				if ( pos > this->end() || pos < this->begin() )
 					throw ( std::length_error("vector::insert") );
 				//in case of reallocation
-				difference_type diff = pos - this->begin();
+				size_type index = pos - this->begin();
 				this->_verify_capacity(count);
-				pos = this->begin() + diff;
+				iterator new_pos = this->begin() + index;
 
-				this->_move_array_forward( pos, this->end(), pos + count);
+				this->_move_array_forward( new_pos, this->end(), new_pos + count );
+				for ( size_type i = 0; i < count; ++i ) {
+					this->_self_construct( new_pos + i, value );
+				}
 				this->_size += count;
-				_size_cpy( count, value, &*pos );
 			};
 
 			template< class InputIt >
@@ -590,19 +635,15 @@ namespace ft
 			insert( iterator pos, InputIt first, InputIt last ) {
 
 				difference_type distance = _get_distance( first, last );
-				difference_type diff = pos - this->begin();
+				difference_type index = pos - this->begin();
 				this->_verify_capacity(distance);
-				iterator new_pos = this->begin() + diff;
+				iterator new_pos = this->begin() + index;
 
-				this->_move_array_forward( new_pos, this->end(), new_pos + distance);
-				while ( first != last )
-				{
-					this->_alctr.construct( &*new_pos, *first );
-					++first;
-					++new_pos;
-					++this->_size;
+				this->_move_array_forward( new_pos, this->end(), new_pos + distance );
+				for (; first != last; ++first, ++new_pos ) {
+					this->_self_construct( new_pos, *first );
 				}
-				// this->_move_array_forward( first, last, new_pos );
+				this->_size += distance;
 			};
 
 			/*************************
@@ -632,7 +673,11 @@ namespace ft
 
 				difference_type distance_beg = first - this->begin();
 				this->_move_array_backward( last, this->end(), this->begin() + distance_beg );
-				this->_size -= last - first;
+				size_type new_s = this->_size - static_cast<size_type>( last - first );
+				for ( size_type i = 0; i < (this->_size - new_s); ++i ) {
+					this->_alctr.destroy( &*( this->begin() + new_s + i ) );
+				}
+				this->_size = new_s;
 				return this->begin() + distance_beg;
 			};
 
@@ -645,7 +690,7 @@ namespace ft
 					this->reserve(count);
 				else if ( count > this->capacity() )
 					this->reserve( 2 * this->size() );
-				
+
 				if ( count > this->_size ) {
 					
 					size_type to_add = count - this->size();
@@ -688,20 +733,17 @@ namespace ft
 			/* ************************************************************************** */
 			void	swap( vector& other ) {
 
-				Allocator 	tmp_alctr = other.get_allocator();
-				size_type	tmp_size = other.size();
-				size_type	tmp_capacity = other.capacity();
 				T* 			tmp_arr = other.data();
+				size_type	tmp_capacity = other.capacity();
+				size_type	tmp_size = other.size();
 
-				other._alctr = this->_alctr; 
-				other._size = this->_size; 
-				other._capacity = this->_capacity; 
 				other._arr = this->_arr; 
+				other._capacity = this->_capacity; 
+				other._size = this->_size; 
 
-				this->_alctr = tmp_alctr; 
-				this->_size = tmp_size; 
-				this->_capacity = tmp_capacity; 
 				this->_arr = tmp_arr; 
+				this->_capacity = tmp_capacity; 
+				this->_size = tmp_size; 
 			}
 	};
 	

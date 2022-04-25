@@ -1,0 +1,26 @@
+<-----------{self}----------->
+== :true
+< :false
+<= :true
+>= :true
+>:false
+<-----------{same shape}----------->
+== :true
+< :false
+<= :true
+>= :true
+>:false
+<-----------{different content, same size}----------->
+<-----------{different size)}----------->
+== :false
+< :false
+<= :false
+>= :true
+> :true
+<-----------{bcop size)}----------->
+> :true
+<-----------{add size)}----------->
+< :true
+<= :true
+>= :false
+>:false

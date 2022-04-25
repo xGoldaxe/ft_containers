@@ -12,9 +12,9 @@ int main( void ) {
     t[3] = "comment";
     t[4] = "allez";
 
-    std::cout << *(t.insert( t.begin() + 5, "heyyyyy")) << std::endl;
-    std::cout << *(t.insert( t.begin() + 2, "heyyyyy")) << std::endl;
-    std::cout << *(t.insert( t.begin() + 0, "heyyyyy")) << std::endl;
+    std::cout << *(t.insert( t.begin() + 5, "heyyyyy2")) << std::endl;
+    std::cout << *(t.insert( t.begin() + 2, "heyyyyy3")) << std::endl;
+    std::cout << *(t.insert( t.begin() + 0, "heyyyyy4")) << std::endl;
 
     std::cout << t.size() << ":" << t.capacity() << std::endl;
 

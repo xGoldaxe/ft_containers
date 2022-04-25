@@ -1,3 +1,4 @@
+#include "../ft.hpp"
 #include <list>
 #include <iostream>
 #include <map>
@@ -8,8 +9,8 @@
 
 int		main(void)
 {
-	std::map<T1, T2> const mp;
-	std::map<T1, T2>::iterator it = mp.begin(); // <-- error expected
+	ft::map<T1, T2> const mp;
+	ft::map<T1, T2>::iterator it = mp.begin(); // <-- error expected
 
 	(void)it;
 	return (0);
